@@ -54,6 +54,49 @@ export async function fetchReadyStories(): Promise<JiraSuiteItem[]> {
   }));
 }
 
+/** Fetch the current status of a single Jira issue. Returns null if not found. */
+async function fetchCurrentStatus(issueKey: string): Promise<string | null> {
+  try {
+    const url = `https://${JIRA_HOST}/rest/api/3/issue/${issueKey}?fields=status`;
+    const response = await fetch(url, {
+      headers: { Authorization: authHeader(), Accept: 'application/json' },
+    });
+    if (!response.ok) return null;
+    const data = await response.json() as { fields: { status: { name: string } } };
+    return data.fields.status.name;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Re-check every story currently in the manifest against its live Jira status.
+ * Removes any story that has moved OUT of the target status (e.g. back to "To Do"
+ * or forward to "Done"). Returns the filtered manifest.
+ */
+export async function revalidateManifest(existing: JiraSuiteItem[]): Promise<JiraSuiteItem[]> {
+  if (existing.length === 0) return existing;
+
+  const stillValid: JiraSuiteItem[] = [];
+  const removed: string[] = [];
+
+  for (const item of existing) {
+    const currentStatus = await fetchCurrentStatus(item.issueKey);
+    if (currentStatus === STATUS) {
+      stillValid.push({ ...item, status: currentStatus });
+    } else {
+      removed.push(`${item.issueKey} (now "${currentStatus ?? 'not found'}")`);
+    }
+  }
+
+  if (removed.length > 0) {
+    console.log(`   Removing ${removed.length} story/stories no longer in "${STATUS}":`);
+    removed.forEach((r) => console.log(`       - ${r}`));
+  }
+
+  return stillValid;
+}
+
 export function loadManifest(): JiraSuiteItem[] {
   if (!fs.existsSync(SUITE_MANIFEST)) return [];
   return JSON.parse(fs.readFileSync(SUITE_MANIFEST, 'utf-8')) as JiraSuiteItem[];
@@ -89,7 +132,11 @@ export function mergeIntoSuite(existing: JiraSuiteItem[], fresh: JiraSuiteItem[]
 export async function pollOnce(): Promise<JiraSuiteItem[]> {
   console.log(`\nPolling Jira for "${STATUS}" stories in project ${PROJECT_KEY}...`);
   const fresh = await fetchReadyStories();
-  const existing = loadManifest();
+
+  let existing = loadManifest();
+  console.log(`   Revalidating ${existing.length} existing suite entries...`);
+  existing = await revalidateManifest(existing);
+
   const updated = mergeIntoSuite(existing, fresh);
   saveManifest(updated);
   console.log(`   Suite total: ${updated.length} story/stories`);
