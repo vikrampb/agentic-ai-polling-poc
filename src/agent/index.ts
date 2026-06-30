@@ -82,6 +82,56 @@ app.get('/health',(_req:Request,res:Response)=>res.json({status:'ok'}));
 app.listen(Number(PORT),'0.0.0.0',()=>console.log(\`Mock server on http://0.0.0.0:\${PORT}\`));
 `;
 
+// ── Check agent branch for existing @regression tests ───────────────────────
+async function checkAndTriggerRegression(): Promise<void> {
+  try {
+    const { Octokit } = require('octokit');
+    const octokit = new (require('octokit').Octokit)({ auth: process.env.GITHUB_TOKEN });
+    const owner  = process.env.GITHUB_OWNER!;
+    const repo   = process.env.GITHUB_REPO!;
+    const branch = process.env.GITHUB_BRANCH ?? 'agent/auto-tests';
+
+    // List all spec files on agent branch
+    const { data } = await octokit.rest.repos.getContent({
+      owner, repo, path: 'tests/generated', ref: branch,
+    }).catch(() => ({ data: [] }));
+
+    if (!Array.isArray(data) || data.length === 0) return;
+
+    // Check each spec file for @regression tag
+    let regressionFound = false;
+    for (const file of data as Array<{ name: string; path: string }>) {
+      if (!file.name.endsWith('.spec.ts')) continue;
+      const { data: fileData } = await octokit.rest.repos.getContent({
+        owner, repo, path: file.path, ref: branch,
+      });
+      if (!Array.isArray(fileData) && 'content' in fileData) {
+        const fileContent = Buffer.from((fileData as any).content, 'base64').toString('utf-8');
+        if (fileContent.includes('@regression')) {
+          regressionFound = true;
+          console.log(`   🔖  Found @regression tags in ${file.name}`);
+          break;
+        }
+      }
+    }
+
+    if (regressionFound) {
+      console.log('\n🔖  @regression tests found on agent branch — triggering regression run…');
+      await octokit.rest.actions.createWorkflowDispatch({
+        owner, repo,
+        workflow_id: 'regression.yml',
+        ref: 'main',
+        inputs: { triggered_by: 'poll-cycle-check' },
+      });
+      console.log('   ✓  Regression workflow triggered');
+    } else {
+      console.log('   ✓  No @regression tests on agent branch — skipping regression trigger');
+    }
+  } catch (e) {
+    console.log(`   ⚠️   Regression check error: ${(e as Error).message}`);
+  }
+}
+
 // ── Core pipeline ─────────────────────────────────────────────────────────────
 interface StoryInput {
   issueKey:              string;
@@ -303,6 +353,10 @@ async function runPolling(): Promise<void> {
   console.log(`    Project  : ${process.env.JIRA_PROJECT_KEY ?? 'AQA'}`);
   console.log(`    Status   : ${process.env.JIRA_READY_STATUS ?? 'In Review'}\n`);
 
+  // Check agent branch for existing @regression tests on every poll startup
+  console.log('\n🔍  Checking for existing @regression tests on agent branch…');
+  await checkAndTriggerRegression();
+
   // Initial poll
   const suite = await pollOnce();
 
@@ -316,14 +370,17 @@ async function runPolling(): Promise<void> {
     await runPipeline(stories);
   }
 
-  // Continue polling for new stories
-  const stop = startPollingLoop(async (updatedSuite) => {
-    const stories: StoryInput[] = updatedSuite.map((s) => ({
-      issueKey:              s.issueKey,
-      plainEnglishTestCases: [],
-    }));
-    await runPipeline(stories);
-  });
+  // Continue polling for new stories — also check @regression on each tick
+  const stop = startPollingLoop(
+    async (updatedSuite) => {
+      const stories: StoryInput[] = updatedSuite.map((s) => ({
+        issueKey:              s.issueKey,
+        plainEnglishTestCases: [],
+      }));
+      await runPipeline(stories);
+    },
+    checkAndTriggerRegression,
+  );
 
   // Graceful shutdown
   process.on('SIGINT', () => {

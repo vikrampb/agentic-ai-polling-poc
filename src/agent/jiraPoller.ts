@@ -145,6 +145,7 @@ export async function pollOnce(): Promise<JiraSuiteItem[]> {
 
 export function startPollingLoop(
   onNewStories: (suite: JiraSuiteItem[]) => Promise<void>,
+  onEachTick?: () => Promise<void>,
 ): () => void {
   console.log(`\nStarting Jira polling loop (interval: ${POLL_INTERVAL_MS / 1000}s)`);
   let stopped = false;
@@ -157,6 +158,8 @@ export function startPollingLoop(
       if (suite.length > beforeCount) {
         await onNewStories(suite);
       }
+      // Run any per-tick callback (e.g. regression check)
+      if (onEachTick) await onEachTick();
     } catch (err) {
       console.error('   Poll error:', (err as Error).message);
     }
