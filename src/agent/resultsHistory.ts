@@ -116,7 +116,7 @@ a{color:#4FC3F7;text-decoration:none}.badge{font-size:.7rem;padding:2px 8px;bord
 <tbody>${rows}</tbody></table></body></html>`;
 }
 
-async function commitIndex(
+async function writeIndexFile(
   entries:      HistoryEntry[],
   folder:       string,
   title:        string,
@@ -159,8 +159,8 @@ export async function commitRunReport(
   return commitReport(html, runNumber, conclusion, 'results-history', 'run');
 }
 
-export async function commitIndex(entries: HistoryEntry[], newFilename?: string): Promise<void> {
-  return commitIndex(entries, 'results-history', 'Test Run History', `Last ${MAX_HISTORY} runs`, newFilename);
+export async function writeIndexFile(entries: HistoryEntry[], newFilename?: string): Promise<void> {
+  return writeIndexFile(entries, 'results-history', 'Test Run History', `Last ${MAX_HISTORY} runs`, newFilename);
 }
 
 // ── Regression history ────────────────────────────────────────────────────────
@@ -182,5 +182,5 @@ export async function commitRegressionReport(
 }
 
 export async function commitRegressionIndex(entries: HistoryEntry[], newFilename?: string): Promise<void> {
-  return commitIndex(entries, 'regression-history', 'Regression Run History', '@regression tests only', newFilename);
+  return writeIndexFile(entries, 'regression-history', 'Regression Run History', '@regression tests only', newFilename);
 }
