@@ -159,7 +159,7 @@ export async function commitRunReport(
   return commitReport(html, runNumber, conclusion, 'results-history', 'run');
 }
 
-export async function writeIndexFile(entries: HistoryEntry[], newFilename?: string): Promise<void> {
+export async function commitIndex(entries: HistoryEntry[], newFilename?: string): Promise<void> {
   return writeIndexFile(entries, 'results-history', 'Test Run History', `Last ${MAX_HISTORY} runs`, newFilename);
 }
 
