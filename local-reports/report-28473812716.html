@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Playwright Test Report — Run #28473812716</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+       background:#0f172a;color:#e2e8f0;min-height:100vh;padding:2rem}
+  h1{font-size:1.6rem;font-weight:600;color:#f8fafc;margin-bottom:0.25rem}
+  .sub{font-size:0.85rem;color:#64748b;margin-bottom:2rem}
+  a{color:#4FC3F7;text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* stat cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+  .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.2rem 1rem;text-align:center}
+  .card .num{font-size:2rem;font-weight:700;line-height:1}
+  .card .lbl{font-size:0.75rem;color:#94a3b8;margin-top:0.4rem;text-transform:uppercase;letter-spacing:.05em}
+  .card.overall .num{color:#02C39A}
+  .card.pass    .num{color:#02C39A}
+  .card.fail    .num{color:#E24B4A}
+  .card.skip    .num{color:#64748b}
+  .card.dur     .num{font-size:1.4rem;color:#4FC3F7}
+
+  /* progress bar */
+  .bar-wrap{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.2rem;margin-bottom:2rem}
+  .bar-label{display:flex;justify-content:space-between;font-size:0.8rem;color:#94a3b8;margin-bottom:0.6rem}
+  .bar-track{background:#334155;border-radius:999px;height:12px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#02C39A,#4FC3F7);
+            width:100%;transition:width 0.6s ease}
+
+  /* table */
+  .tbl-wrap{background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden}
+  .tbl-head{padding:1rem 1.2rem;border-bottom:1px solid #334155;
+            font-size:0.85rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+  table{width:100%;border-collapse:collapse}
+  th{padding:0.7rem 1rem;text-align:left;font-size:0.75rem;font-weight:600;
+     color:#64748b;background:#162032;text-transform:uppercase;letter-spacing:.05em}
+  td{padding:0.65rem 1rem;font-size:0.85rem;border-top:1px solid #1e293b;vertical-align:top}
+  tr:hover td{background:#162032}
+  .suite{color:#94a3b8;font-size:0.8rem}
+  .dur{color:#64748b;font-size:0.8rem;white-space:nowrap}
+  .err{background:#2d1515;color:#fca5a5;font-family:monospace;font-size:0.75rem;
+       padding:0.5rem 0.75rem;border-radius:6px;margin:0.25rem 0 0.5rem;
+       border-left:3px solid #E24B4A;white-space:pre-wrap;word-break:break-all}
+
+  /* run link */
+  .run-link{margin-bottom:1.5rem;font-size:0.85rem}
+  .badge{display:inline-block;padding:0.2rem 0.7rem;border-radius:999px;
+         font-size:0.75rem;font-weight:600;background:#02C39A22;color:#02C39A;
+         border:1px solid #02C39A55;margin-right:0.5rem}
+</style>
+</head>
+<body>
+
+<h1>Playwright Test Report</h1>
+<p class="sub">Agentic AI POC &nbsp;·&nbsp; Run #28473812716 &nbsp;·&nbsp; Tue, 30 Jun 2026 20:30:55 GMT</p>
+
+<div class="run-link">
+  <span class="badge">✅ PASSED</span>
+  <a href="https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28473812716" target="_blank">View full GitHub Actions run ↗</a>
+</div>
+
+<div class="cards">
+  <div class="card overall">
+    <div class="num">✅ PASSED</div>
+    <div class="lbl">Overall</div>
+  </div>
+  <div class="card pass">
+    <div class="num">9</div>
+    <div class="lbl">Passed</div>
+  </div>
+  <div class="card fail">
+    <div class="num">0</div>
+    <div class="lbl">Failed</div>
+  </div>
+  <div class="card skip">
+    <div class="num">0</div>
+    <div class="lbl">Skipped</div>
+  </div>
+  <div class="card dur">
+    <div class="num">0.2s</div>
+    <div class="lbl">Total time</div>
+  </div>
+  <div class="card">
+    <div class="num" style="color:#f8fafc">100%</div>
+    <div class="lbl">Pass rate</div>
+  </div>
+</div>
+
+<div class="bar-wrap">
+  <div class="bar-label">
+    <span>Pass rate</span>
+    <span>9 / 9 tests passed</span>
+  </div>
+  <div class="bar-track"><div class="bar-fill"></div></div>
+</div>
+
+<div class="tbl-wrap">
+  <div class="tbl-head">Test results — 9 tests</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%">Suite</th>
+        <th>Test</th>
+        <th style="width:11%">Status</th>
+        <th style="width:8%">Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="suite">AQA-1 – Happy Path</td>
+        <td>US_PERSON user can log in and receives success message</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">35ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Happy Path</td>
+        <td>All US_PERSON users receive the correct success message on login</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">40ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Happy Path</td>
+        <td>US_PERSON user login response does not contain a non-US error message</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">13ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Boundary Conditions</td>
+        <td>First US_PERSON user in the list can log in successfully</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">10ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Boundary Conditions</td>
+        <td>Last US_PERSON user in the list can log in successfully</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">9ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Boundary Conditions</td>
+        <td>First NON_US_PERSON user in the list is denied login</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">10ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Negative Tests</td>
+        <td>NON_US_PERSON user cannot log in and receives the correct error message</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">9ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Negative Tests</td>
+        <td>All NON_US_PERSON users are denied login with the correct error message</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">17ms</td>
+      </tr>
+      
+      <tr>
+        <td class="suite">AQA-1 – Negative Tests</td>
+        <td>NON_US_PERSON user login response does not contain the success message</td>
+        <td style="color:#02C39A;font-weight:600">✅ passed</td>
+        <td class="dur">8ms</td>
+      </tr>
+      </tbody>
+  </table>
+</div>
+
+</body>
+</html>
