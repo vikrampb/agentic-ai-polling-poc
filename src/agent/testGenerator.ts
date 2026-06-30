@@ -76,6 +76,11 @@ Exact server messages:
 Rules:
 - Call getUsers(request) to get users dynamically — never hardcode credentials
 - Use the password field from getUsers() directly
+- CRITICAL: interface User, interface LoginResponse, async function getUsers,
+  and async function login are ALREADY DEFINED above your output. Do NOT
+  redeclare them anywhere -- just call getUsers(request) and login(request, u, p)
+  directly. Redeclaring them causes a fatal syntax error.
+- Do NOT include any import statements or function declarations in your output.
 - Generate exactly THREE describe blocks:
   1. "Happy Path" — expected successful scenarios
   2. "Boundary Conditions" — edge cases and limits
@@ -90,7 +95,7 @@ Rules:
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  return response.content
+  let cleaned = response.content
     .filter((b) => b.type === 'text')
     .map((b) => (b as { type: 'text'; text: string }).text)
     .join('')
@@ -98,6 +103,15 @@ Rules:
     .replace(/\n?```\s*$/gi, '')
     .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
     .trim();
+
+  // Safety net: strip any accidental redeclaration of helpers already in FILE_HEADER
+  cleaned = cleaned
+    .replace(/^import .*$/gm, '')
+    .replace(/^interface (User|LoginResponse)\s*\{[\s\S]*?\n\}\n?/gm, '')
+    .replace(/^async function (getUsers|login)\([\s\S]*?\n\}\n?/gm, '')
+    .trim();
+
+  return cleaned;
 }
 
 // ── Generate body for a single plain-English test case ────────────────────────
