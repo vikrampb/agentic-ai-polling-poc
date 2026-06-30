@@ -83,7 +83,7 @@ jobs:
 
       - name: Run @regression tests
         if: steps.check.outputs.has_regression == 'true'
-        run: npx playwright test --grep @regression
+        run: npx playwright test --grep @regression --reporter=html,json
         env:
           BASE_URL: http://127.0.0.1:3000
 
@@ -116,8 +116,10 @@ jobs:
           # Copy report if it exists
           if [ -f playwright-report/index.html ]; then
             cp playwright-report/index.html regression-history/${FILENAME}
+            echo "Copied Playwright HTML report to ${FILENAME}"
           else
-            echo "<html><body><h1>Regression Run #${NEXT}</h1><p>Result: ${CONCLUSION}</p><p>Run ID: ${{ github.run_id }}</p></body></html>" > regression-history/${FILENAME}
+            echo "Playwright HTML report not found — writing placeholder"
+            echo "<html><body><h1>Regression Run #${NEXT}</h1><p>Result: ${CONCLUSION}</p></body></html>" > regression-history/${FILENAME}
           fi
 
           # Prune to last 10
