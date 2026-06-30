@@ -119,7 +119,6 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
   console.log('\n🧠  Generating tests…');
   const issueMap: Record<string, Awaited<ReturnType<typeof fetchIssue>> | null> = {};
   let regressionPresent = false;
-  let regressionPresent = false;
   const skippedKeys: string[] = [];
 
   for (const story of stories) {
