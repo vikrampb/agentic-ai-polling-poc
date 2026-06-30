@@ -1,12 +1,6 @@
 /**
  * src/agent/testGenerator.ts
  * Generates Playwright TypeScript tests from a Jira story.
- *
- * Interactive mode: one test() per plain-English case entered at prompt.
- * Automated mode:   Claude generates happy path + boundary + negative tests.
- *
- * @regression tagging: applied when the Jira story has a "Regression" label
- * OR when the AC/description contains regression-related keywords.
  */
 import Anthropic from '@anthropic-ai/sdk';
 import { JiraIssue } from '../jira/client';
@@ -55,79 +49,74 @@ async function login(
 }
 `;
 
-// ── Detect if a story should have @regression tagging ─────────────────────────
+// ── Detect if story should have @regression tagging ───────────────────────────
 function detectRegression(issue: JiraIssue): boolean {
-  // Check Jira label first (easiest for demo)
-  const labelMatch = issue.labels.some(
-    (l) => l.toLowerCase() === 'regression'
-  );
+  const labelMatch = issue.labels.some((l) => l.toLowerCase() === 'regression');
   if (labelMatch) {
-    console.log(`         🏷️   Jira label "Regression" detected — tagging tests with @regression`);
+    console.log(`         🏷️   Jira label "Regression" detected — tagging tests`);
     return true;
   }
-  // Fall back to keyword check in AC/description
   const text = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
-  const textMatch = text.includes('regression') ||
+  const textMatch =
+    text.includes('regression') ||
     text.includes('existing functionality') ||
     text.includes('backward compatibility') ||
     text.includes('must not break') ||
     text.includes('should not break') ||
     text.includes('@regression');
   if (textMatch) {
-    console.log(`         🏷️   Regression keyword found in AC/description — tagging tests with @regression`);
+    console.log(`         🏷️   Regression keyword in AC/description — tagging tests`);
     return true;
   }
   return false;
 }
 
-// ── Detect if a generated test file contains @regression tags ─────────────────
+// ── Detect if generated file has @regression tags ────────────────────────────
 export function hasRegressionTests(testCode: string): boolean {
   return testCode.includes('@regression');
 }
 
-// ── Auto-generate happy path, boundary, negative tests ────────────────────────
+// ── Strip markdown/code-fence artifacts from Claude output ───────────────────
+function cleanBody(text: string): string {
+  return text
+    .replace(/^```(?:typescript|ts|javascript|js)?\n?/gi, '')
+    .replace(/\n?```\s*$/gi, '')
+    .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
+    .replace(/^import .*$/gm, '')
+    .replace(/^interface (User|LoginResponse)\s*\{[\s\S]*?\n\}\n?/gm, '')
+    .replace(/^async function (getUsers|login)\([\s\S]*?\n\}\n?/gm, '')
+    .trim();
+}
+
+// ── Auto-generate 3 describe blocks via Claude ───────────────────────────────
 async function generateAutoTests(issue: JiraIssue, isRegression: boolean): Promise<string> {
-  const regressionInstruction = isRegression
-    ? `- IMPORTANT: Tag every test() block with { tag: ['@regression'] } like this:
-  test('test name', { tag: ['@regression'] }, async ({ request }) => {
-  Apply this to every single test() in all three describe blocks.`
-    : `- Do NOT add any test.tag() annotations to tests.`;
+  const tagInstruction = isRegression
+    ? `- Tag EVERY test() with { tag: ['@regression'] } like:
+  test('name', { tag: ['@regression'] }, async ({ request }) => {`
+    : `- Do NOT add any tag annotations.`;
 
-  const prompt = `
-You are a QA engineer. Given this Jira story, generate Playwright TypeScript tests.
-Output ONLY raw TypeScript -- no markdown, no code fences, no language tags.
-Output ONLY test.describe blocks containing test() blocks. NOTHING ELSE.
+  const prompt = `You are a QA engineer. Generate Playwright TypeScript tests for this story.
+Output ONLY test.describe blocks. No imports. No function declarations. No markdown.
 
-Story: ${issue.key} -- ${issue.summary}
+Story: ${issue.key} — ${issue.summary}
 Description: ${issue.description}
 AC: ${issue.acceptanceCriteria || '(see description)'}
 
-CRITICAL -- these are ALREADY DEFINED above your output. Do NOT redeclare them:
-  - interface User (includes team_name: string | null)
-  - interface LoginResponse
-  - async function getUsers(request) -> Promise<User[]>
-  - async function login(request, username, password) -> Promise<LoginResponse>
+ALREADY DEFINED — do NOT redeclare:
+  getUsers(request): Promise<User[]>   — User has: id, name, export_status, username, password, team_name
+  login(request, username, password): Promise<LoginResponse>
 
-Just call these directly. Redeclaring them is a fatal syntax error.
-
-Exact server messages:
-  US_PERSON success  : "Login successful. Welcome!"
-  NON_US_PERSON block: "Only US Persons are allowed to watch this demo."
+Server messages:
+  US_PERSON  : "Login successful. Welcome!"
+  NON_US_PERSON: "Only US Persons are allowed to watch this demo."
 
 Rules:
-- Call getUsers(request) to get users dynamically -- never hardcode credentials
-- Use the password field from getUsers() directly
-- Do NOT include import statements or function declarations in your output
-${regressionInstruction}
-- CRITICAL: interface User, interface LoginResponse, async function getUsers,
-  and async function login are ALREADY DEFINED. Do NOT redeclare them.
-- Generate exactly THREE describe blocks:
-  1. "Happy Path" -- expected successful scenarios
-  2. "Boundary Conditions" -- edge cases and limits
-  3. "Negative Tests" -- failure scenarios, invalid inputs, access denials
-- Each describe block should have 2-3 test() blocks
-- Start your output directly with: test.describe('${issue.key} -- Happy Path', () => {
-`.trim();
+- Call getUsers/login directly. Never redeclare them.
+- Never hardcode credentials — use password from getUsers()
+${tagInstruction}
+- Generate THREE describe blocks: Happy Path, Boundary Conditions, Negative Tests
+- 2-3 test() blocks each
+- Start with: test.describe('${issue.key} – Happy Path', () => {`.trim();
 
   const response = await client.messages.create({
     model:      'claude-sonnet-4-6',
@@ -135,52 +124,32 @@ ${regressionInstruction}
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  let cleaned = response.content
-    .filter((b) => b.type === 'text')
-    .map((b) => (b as { type: 'text'; text: string }).text)
-    .join('')
-    .replace(/^```(?:typescript|ts|javascript|js)?\n?/gi, '')
-    .replace(/\n?```\s*$/gi, '')
-    .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
-    .trim();
-
-  // Safety net: strip accidental redeclarations
-  cleaned = cleaned
-    .replace(/^import .*$/gm, '')
-    .replace(/^interface (User|LoginResponse)\s*\{[\s\S]*?\n\}\n?/gm, '')
-    .replace(/^async function (getUsers|login)\([\s\S]*?\n\}\n?/gm, '')
-    .trim();
-
-  return cleaned;
+  return cleanBody(
+    response.content
+      .filter((b) => b.type === 'text')
+      .map((b) => (b as { type: 'text'; text: string }).text)
+      .join('')
+  );
 }
 
-// ── Generate body for a single plain-English test case ────────────────────────
-async function generateTestBody(tc: PlainEnglishTestCase, isRegression: boolean): Promise<string> {
-  const regressionInstruction = isRegression
-    ? `For this test use: test('description', { tag: ['@regression'] }, async ({ request }) => {`
-    : '';
+// ── Generate body for one plain-English test case ────────────────────────────
+async function generateTestBody(tc: PlainEnglishTestCase): Promise<string> {
+  const prompt = `Write the BODY of one Playwright TypeScript test.
+Output ONLY raw TypeScript statements inside the async ({ request }) => { } block.
+No imports. No function declarations. No markdown.
 
-  const prompt = `
-You are writing the BODY of a single Playwright TypeScript test function.
-Output ONLY raw TypeScript statements -- no markdown, no code fences.
-Only statements inside the async ({ request }) => { } block.
-${regressionInstruction}
+Helpers available:
+  getUsers(request) -> User[]   (User has: export_status, username, password, team_name)
+  login(request, username, password) -> { success, message, exportStatus? }
 
-Available helpers:
-  getUsers(request) -> Promise<User[]>
-    User: { id, name, export_status: "US_PERSON"|"NON_US_PERSON", username, password, team_name }
-  login(request, username, password) -> Promise<LoginResponse>
-    LoginResponse: { success: boolean, message: string, exportStatus?: string }
-
-Exact server messages:
-  US_PERSON success  : "Login successful. Welcome!"
-  NON_US_PERSON block: "Only US Persons are allowed to watch this demo."
+Server messages:
+  success : "Login successful. Welcome!"
+  blocked : "Only US Persons are allowed to watch this demo."
 
 Test:
   Description : ${tc.description}
   Endpoint    : ${tc.endpoint}
-  Expected    : ${tc.expectedOutcome}
-`.trim();
+  Expected    : ${tc.expectedOutcome}`.trim();
 
   const response = await client.messages.create({
     model:      'claude-sonnet-4-6',
@@ -188,14 +157,12 @@ Test:
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  return response.content
-    .filter((b) => b.type === 'text')
-    .map((b) => (b as { type: 'text'; text: string }).text)
-    .join('')
-    .replace(/^```(?:typescript|ts|javascript|js)?\n?/gi, '')
-    .replace(/\n?```\s*$/gi, '')
-    .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
-    .trim();
+  return cleanBody(
+    response.content
+      .filter((b) => b.type === 'text')
+      .map((b) => (b as { type: 'text'; text: string }).text)
+      .join('')
+  );
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
@@ -205,22 +172,19 @@ export async function generatePlaywrightTests(
 ): Promise<string> {
   const isRegression = detectRegression(issue);
 
-  // Interactive mode — one test() per plain-English case
   if (plainEnglishTestCases.length > 0) {
     const testBlocks: string[] = [];
     for (const tc of plainEnglishTestCases) {
       console.log(`         🤖  Generating body for: "${tc.description}"`);
-      const body  = await generateTestBody(tc, isRegression);
-      const tag   = isRegression ? \`, { tag: ['@regression'] }\` : '';
-      testBlocks.push(`
-  test('${tc.description}'${tag}, async ({ request }) => {
-${body.split('\n').map((l) => '    ' + l).join('\n')}
-  });`);
+      const body = await generateTestBody(tc);
+      const sig  = isRegression
+        ? `test('${tc.description}', { tag: ['@regression'] }, async ({ request }) => {`
+        : `test('${tc.description}', async ({ request }) => {`;
+      testBlocks.push(`\n  ${sig}\n${body.split('\n').map((l) => '    ' + l).join('\n')}\n  });`);
     }
-    return FILE_HEADER + `\ntest.describe('${issue.key} -- ${issue.summary}', () => {\n${testBlocks.join('\n')}\n});\n`;
+    return FILE_HEADER + `\ntest.describe('${issue.key} – ${issue.summary}', () => {${testBlocks.join('\n')}\n});\n`;
   }
 
-  // Automated mode — Claude generates all three test categories
   console.log(`         🤖  Auto-generating happy path, boundary and negative tests…`);
   const autoTests = await generateAutoTests(issue, isRegression);
   return FILE_HEADER + '\n' + autoTests + '\n';
