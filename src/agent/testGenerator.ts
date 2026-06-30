@@ -106,9 +106,23 @@ ALREADY DEFINED — do NOT redeclare:
   getUsers(request): Promise<User[]>   — User has: id, name, export_status, username, password, team_name
   login(request, username, password): Promise<LoginResponse>
 
-Server messages:
-  US_PERSON  : "Login successful. Welcome!"
-  NON_US_PERSON: "Only US Persons are allowed to watch this demo."
+AVAILABLE ENDPOINTS — only these two exist, do not invent others:
+  GET /api/users
+    Response: { users: Array<{ id, name, export_status, username, password, team_name }> }
+    export_status values are the strings "US_PERSON" or "NON_US_PERSON" (not variables)
+    team_name is "PBE", "DPS", or null
+
+  GET /api/login?username=u&password=p
+    Response: { success: boolean, message: string, exportStatus?: string }
+    No other fields exist — do not assert redirect_url, home_page, team, or teamPage
+
+Exact assertions to use:
+  US_PERSON success  : expect(response.message).toContain("Login successful")
+  NON_US_PERSON block: expect(response.message).toContain("Only US Persons are allowed to watch this demo.")
+
+CRITICAL — US_PERSON and NON_US_PERSON are STRING VALUES not variables:
+  CORRECT: user.export_status === 'US_PERSON'
+  WRONG:   user.export_status === US_PERSON
 
 Rules:
 - Call getUsers/login directly. Never redeclare them.
