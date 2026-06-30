@@ -1,0 +1,730 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+      "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/playwright.config.ts",
+    "rootDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+        "commitHash": "19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+        "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28466180051"
+      },
+      "gitCommit": {
+        "shortHash": "19c7f8a",
+        "hash": "19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+        "subject": "fix: overlay playwright.config.ts from agent branch for baseURL",
+        "body": "fix: overlay playwright.config.ts from agent branch for baseURL\n",
+        "author": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782842665000
+        },
+        "committer": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782842665000
+        },
+        "branch": "main"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+            "commitHash": "19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+            "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28466180051"
+          },
+          "gitCommit": {
+            "shortHash": "19c7f8a",
+            "hash": "19c7f8a46c417eecb3bb4272963f75d05a04dc8e",
+            "subject": "fix: overlay playwright.config.ts from agent branch for baseURL",
+            "body": "fix: overlay playwright.config.ts from agent branch for baseURL\n",
+            "author": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782842665000
+            },
+            "committer": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782842665000
+            },
+            "branch": "main"
+          },
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "AQA-1.spec.ts",
+      "file": "AQA-1.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AQA-1 – Happy Path",
+          "file": "AQA-1.spec.ts",
+          "line": 32,
+          "column": 6,
+          "specs": [
+            {
+              "title": "US_PERSON user can log in successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 24,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:34:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:34:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:38.938Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Happy-Path-U-85a2b-ser-can-log-in-successfully/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-edb324c2ae5cfe89c556",
+              "file": "AQA-1.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "All US_PERSON users receive success message on login",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:44:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:44:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:39.489Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Happy-Path-A-85505-ve-success-message-on-login/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-f0bbfdd172ee414b5fef",
+              "file": "AQA-1.spec.ts",
+              "line": 43,
+              "column": 7
+            },
+            {
+              "title": "Login response for US_PERSON includes exportStatus field",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 21,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:56:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:56:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:40.028Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Happy-Path-L-a46f2-includes-exportStatus-field/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-49f833ec4b2b22397a4b",
+              "file": "AQA-1.spec.ts",
+              "line": 55,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-1 – Boundary Conditions",
+          "file": "AQA-1.spec.ts",
+          "line": 67,
+          "column": 6,
+          "specs": [
+            {
+              "title": "User list contains both US_PERSON and NON_US_PERSON export statuses",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 21,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:69:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:69:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:40.562Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Boundary-Con-d916a-N-US-PERSON-export-statuses/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-8464838b8bacbd733f11",
+              "file": "AQA-1.spec.ts",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "Login with incorrect password for a US_PERSON user does not succeed",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:78:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:78:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:41.103Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Boundary-Con-366bc-ERSON-user-does-not-succeed/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-944577f23013f67e689c",
+              "file": "AQA-1.spec.ts",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "Login with empty username and password returns failure",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=&password=\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=&password=\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at login (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:28:29)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:88:28",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 29,
+                          "line": 28
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 26 |\u001b[39m   password\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m\n \u001b[90m 27 |\u001b[39m )\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mLoginResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mconst\u001b[39m res \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/login'\u001b[39m\u001b[33m,\u001b[39m { params\u001b[33m:\u001b[39m { username\u001b[33m,\u001b[39m password } })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mreturn\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m }\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 29,
+                            "line": 28
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=&password=\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  26 |   password: string,\n  27 | ): Promise<LoginResponse> {\n> 28 |   const res = await request.get('/api/login', { params: { username, password } });\n     |                             ^\n  29 |   return res.json();\n  30 | }\n  31 |\n    at login (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:28:29)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:88:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:41.648Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Boundary-Con-0077c-nd-password-returns-failure/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 29,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-9380ab8d5a498903897e",
+              "file": "AQA-1.spec.ts",
+              "line": 87,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-1 – Negative Tests",
+          "file": "AQA-1.spec.ts",
+          "line": 94,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NON_US_PERSON user is blocked from logging in",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:96:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:96:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:42.206Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Negative-Tes-01052--is-blocked-from-logging-in/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-2237b0656f06398ae3b6",
+              "file": "AQA-1.spec.ts",
+              "line": 95,
+              "column": 7
+            },
+            {
+              "title": "All NON_US_PERSON users are blocked and receive the correct error message",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:106:25",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 30,
+                          "line": 18
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m\n \u001b[90m 17 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m getUsers(request\u001b[33m:\u001b[39m \u001b[33mAPIRequestContext\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mUser\u001b[39m[]\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m   \u001b[36mconst\u001b[39m res  \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/users'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 20 |\u001b[39m   \u001b[36mreturn\u001b[39m body\u001b[33m.\u001b[39musers \u001b[36mas\u001b[39m \u001b[33mUser\u001b[39m[]\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 30,
+                            "line": 18
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/users\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  16 |\n  17 | async function getUsers(request: APIRequestContext): Promise<User[]> {\n> 18 |   const res  = await request.get('/api/users');\n     |                              ^\n  19 |   const body = await res.json();\n  20 |   return body.users as User[];\n  21 | }\n    at getUsers (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:18:30)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:106:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:42.742Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Negative-Tes-9d920-e-the-correct-error-message/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 30,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-b3ddbe2210411492bc87",
+              "file": "AQA-1.spec.ts",
+              "line": 105,
+              "column": 7
+            },
+            {
+              "title": "Login with a nonexistent username returns failure",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=nonexistent_user_xyz&password=somepassword123\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=nonexistent_user_xyz&password=somepassword123\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at login (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:28:29)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:118:28",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                          "column": 29,
+                          "line": 28
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 26 |\u001b[39m   password\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m\n \u001b[90m 27 |\u001b[39m )\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mLoginResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m   \u001b[36mconst\u001b[39m res \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m'/api/login'\u001b[39m\u001b[33m,\u001b[39m { params\u001b[33m:\u001b[39m { username\u001b[33m,\u001b[39m password } })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mreturn\u001b[39m res\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m }\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "column": 29,
+                            "line": 28
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:3000/api/login?username=nonexistent_user_xyz&password=somepassword123\u001b[22m\n\u001b[2m    - user-agent: Playwright/1.61.1 (x64; ubuntu 24.04) node/20.20 CI/1\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  26 |   password: string,\n  27 | ): Promise<LoginResponse> {\n> 28 |   const res = await request.get('/api/login', { params: { username, password } });\n     |                             ^\n  29 |   return res.json();\n  30 | }\n  31 |\n    at login (/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:28:29)\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts:118:28"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T18:15:43.300Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-1-AQA-1-–-Negative-Tes-e47a3-nt-username-returns-failure/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "column": 29,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-cb88471b39b04cad9086",
+              "file": "AQA-1.spec.ts",
+              "line": 117,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-06-30T18:15:38.372Z",
+    "duration": 5007.792,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 9,
+    "flaky": 0
+  }
+}
