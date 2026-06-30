@@ -36,7 +36,7 @@ const db      = new Database(DB_PATH, { readonly: true });
 // Returns all users including password — POC only, never do this in production.
 app.get('/api/users', (_req: Request, res: Response) => {
   const users = db
-    .prepare('SELECT id, name, export_status, username, password_hash as password FROM users')
+    .prepare('SELECT id, name, export_status, username, password_hash as password, team_name FROM users')
     .all();
   return res.json({ users });
 });
