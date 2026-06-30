@@ -210,6 +210,22 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
       console.log(`   ✓  Regression history updated`);
     }
 
+    // Step 7c: Auto-trigger dedicated regression workflow
+    if (regressionPresent) {
+      console.log('\n🔖  Step 7c – Auto-triggering regression run…');
+      console.log('   (In production this is replaced by the configurable schedule in regression.yml)');
+      const { Octokit } = require('octokit');
+      const octokit2 = new Octokit({ auth: process.env.GITHUB_TOKEN });
+      await octokit2.rest.actions.createWorkflowDispatch({
+        owner: process.env.GITHUB_OWNER!,
+        repo:  process.env.GITHUB_REPO!,
+        workflow_id: 'regression.yml',
+        ref:   'main',
+        inputs: { triggered_by: 'agent' },
+      });
+      console.log('   ✓  Regression workflow triggered — check GitHub Actions for results');
+    }
+
     // Step 7b: Open report locally (polling mode skips UI, interactive opens browser)
     if (RUN_MODE === 'interactive' && reportResult.reportPath) {
       /* LOGIN_UI_START
