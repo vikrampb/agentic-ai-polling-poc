@@ -57,6 +57,38 @@ async function login(
 
 // ── Auto-generate happy path, boundary and negative tests via Claude ──────────
 async function generateAutoTests(issue: JiraIssue): Promise<string> {
+  // Detect if AC/description mentions regression
+  const acText = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
+  const isRegression = acText.includes('regression') ||
+    acText.includes('existing functionality') ||
+    acText.includes('backward compatibility') ||
+    acText.includes('must not break') ||
+    acText.includes('should not break') ||
+    acText.includes('@regression');
+
+  const regressionInstruction = isRegression
+    ? `- IMPORTANT: This story requires regression tagging. For every test() block in
+  ALL three describe blocks, add the tag like this:
+  test('test name', { tag: ['@regression'] }, async ({ request }) => {
+  Do this for every single test() block without exception.`
+    : `- Do NOT add any test.tag() annotations to tests.`;
+
+  // Detect if AC/description mentions regression
+  const acText = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
+  const isRegression = acText.includes('regression') ||
+    acText.includes('existing functionality') ||
+    acText.includes('backward compatibility') ||
+    acText.includes('must not break') ||
+    acText.includes('should not break') ||
+    acText.includes('@regression');
+
+  const regressionInstruction = isRegression
+    ? `- IMPORTANT: This story requires regression tagging. For every test() block in
+  ALL three describe blocks, add the tag like this:
+  test('test name', { tag: ['@regression'] }, async ({ request }) => {
+  Do this for every single test() block without exception.`
+    : `- Do NOT add any test.tag() annotations to tests.`;
+
   const prompt = `
 You are a QA engineer. Given this Jira story, generate Playwright TypeScript tests.
 Output ONLY raw TypeScript — no markdown, no code fences, no language tags.
@@ -81,6 +113,7 @@ Rules:
   redeclare them anywhere -- just call getUsers(request) and login(request, u, p)
   directly. Redeclaring them causes a fatal syntax error.
 - Do NOT include any import statements or function declarations in your output.
+\${regressionInstruction}
 - Generate exactly THREE describe blocks:
   1. "Happy Path" — expected successful scenarios
   2. "Boundary Conditions" — edge cases and limits
@@ -153,6 +186,16 @@ Write only the body statements. Use password from getUsers() directly.
     .replace(/\n?```\s*$/gi, '')
     .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
     .trim();
+}
+
+// ── Detect if generated file contains @regression tags ──────────────────────
+export function hasRegressionTests(testCode: string): boolean {
+  return testCode.includes("@regression");
+}
+
+// ── Detect if generated file contains @regression tags ──────────────────────
+export function hasRegressionTests(testCode: string): boolean {
+  return testCode.includes("@regression");
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────

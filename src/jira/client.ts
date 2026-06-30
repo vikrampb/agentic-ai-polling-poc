@@ -112,16 +112,20 @@ export async function transitionIssue(issueKey: string, targetStatus: string): P
   console.log(`${issueKey} -> ${targetStatus}`);
 }
 
-/** Attach a local file to a Jira issue as an attachment. */
+/** Attach a local file to a Jira issue as an attachment.
+ *  Uses Node's native FormData/Blob (built into Node 18+) instead of
+ *  the form-data package, which does not work reliably with native fetch. */
 export async function attachFile(
   issueKey:    string,
   filePath:    string,
   displayName: string,
 ): Promise<void> {
-  const fs       = require('fs');
-  const FormData = require('form-data');
-  const form     = new FormData();
-  form.append('file', fs.createReadStream(filePath), { filename: displayName });
+  const fs = require('fs');
+  const fileBuffer = fs.readFileSync(filePath);
+  const blob = new Blob([fileBuffer], { type: 'text/html' });
+
+  const form = new FormData();
+  form.append('file', blob, displayName);
 
   const encoded = Buffer.from(`${JIRA_EMAIL}:${JIRA_API_TOKEN}`).toString('base64');
   const res = await fetch(`https://${JIRA_HOST}/rest/api/3/issue/${issueKey}/attachments`, {
@@ -129,7 +133,6 @@ export async function attachFile(
     headers: {
       Authorization:       `Basic ${encoded}`,
       'X-Atlassian-Token': 'no-check',
-      ...form.getHeaders(),
     },
     body: form,
   });

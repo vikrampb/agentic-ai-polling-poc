@@ -18,7 +18,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { fetchIssue, postComment, transitionIssue, attachFile } from '../jira/client';
-import { generatePlaywrightTests, PlainEnglishTestCase }        from './testGenerator';
+import { generatePlaywrightTests, PlainEnglishTestCase, hasRegressionTests } from './testGenerator';
 /* INTERACTIVE_PROMPT_START
 import { collectStories, printSummary }                          from './prompt';
 INTERACTIVE_PROMPT_END */
@@ -31,8 +31,9 @@ import {
   JiraSuiteItem, POLL_INTERVAL_MS, MAX_SUITE_SIZE,
 }                                                                from './jiraPoller';
 import {
-  listHistoryFiles, pruneHistory,
-  commitRunReport, commitIndex,
+  listHistoryFiles, pruneHistory, commitRunReport, commitIndex,
+  listRegressionFiles, pruneRegressionHistory,
+  commitRegressionReport, commitRegressionIndex,
 }                                                                from './resultsHistory';
 import {
   ensureBranch, commitFile, deleteFile,
@@ -117,6 +118,8 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
   // Step 3: Fetch + generate + commit per story
   console.log('\n🧠  Generating tests…');
   const issueMap: Record<string, Awaited<ReturnType<typeof fetchIssue>> | null> = {};
+  let regressionPresent = false;
+  let regressionPresent = false;
   const skippedKeys: string[] = [];
 
   for (const story of stories) {
@@ -150,12 +153,19 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     console.log(`      📝  Mode: ${mode}`);
     const testCode = await generatePlaywrightTests(issue, plainEnglishTestCases);
     console.log(`      ✓  ${testCode.split('\n').length} lines`);
+    if (hasRegressionTests(testCode)) {
+      regressionPresent = true;
+      console.log(`      🔖  @regression tags detected`);
+    }
     await commitFile(`tests/generated/${issueKey}.spec.ts`, testCode, commitMsg);
   }
 
   // Step 4: Trigger CI
   console.log('\n🚀  Triggering GitHub Actions…');
+  console.log(`   📊  Regression tests present: ${regressionPresent}`);
   await triggerWorkflow('ci.yml', 'main');
+  // Store in env for regression step after CI completes
+  process.env.REGRESSION_PRESENT = regressionPresent ? 'true' : 'false';
 
   // Step 5: Poll for result
   console.log('\n⏳  Waiting for CI…');
@@ -175,7 +185,6 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     const historyEntries = await listHistoryFiles();
     const prunedEntries  = await pruneHistory(historyEntries);
 
-    // Next run number
     const nextRunNum  = prunedEntries.length > 0
       ? Math.max(...prunedEntries.map((e) => e.runNumber)) + 1
       : 1;
@@ -184,8 +193,22 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     const reportHtml = html ?? '';
 
     const newFilename = await commitRunReport(reportHtml, nextRunNum, run.conclusion ?? 'unknown');
-    const allEntries  = await listHistoryFiles(); // refresh after commit
+    const allEntries  = await listHistoryFiles();
     await commitIndex(allEntries, newFilename);
+
+    // Step 7b: Store regression report if @regression tests ran
+    if (regressionPresent && reportHtml) {
+      console.log('\n🔖  Updating regression history…');
+      const regEntries  = await listRegressionFiles();
+      const prunedReg   = await pruneRegressionHistory(regEntries);
+      const nextRegNum  = prunedReg.length > 0
+        ? Math.max(...prunedReg.map((e) => e.runNumber)) + 1
+        : 1;
+      const regFilename = await commitRegressionReport(reportHtml, nextRegNum, run.conclusion ?? 'unknown');
+      const allRegEntries = await listRegressionFiles();
+      await commitRegressionIndex(allRegEntries, regFilename);
+      console.log(`   ✓  Regression history updated`);
+    }
 
     // Step 7b: Open report locally (polling mode skips UI, interactive opens browser)
     if (RUN_MODE === 'interactive' && reportResult.reportPath) {
