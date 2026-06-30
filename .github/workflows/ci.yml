@@ -1,0 +1,164 @@
+name: Playwright Tests — Polling Edition
+
+on:
+  # Run nightly at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+  # On-demand from GitHub UI or agent trigger
+  workflow_dispatch:
+  # Also triggered when agent pushes new tests
+  push:
+    branches:
+      - "agent/**"
+
+permissions:
+  contents: write
+  actions:  read
+  checks:   read
+
+jobs:
+  playwright:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout main (has package.json, src, scripts)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Overlay test files from agent/auto-tests branch
+        run: |
+          git fetch origin agent/auto-tests
+          git checkout origin/agent/auto-tests -- tests/ || true
+          echo "Test files:"
+          find tests/ -type f 2>/dev/null || echo "No tests/ folder"
+          echo "package.json: $(ls package.json 2>/dev/null || echo MISSING)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Seed SQLite database
+        run: npx ts-node --compiler-options '{"module":"commonjs"}' src/db/seed.ts
+
+      - name: Start mock login server (background)
+        run: |
+          npx ts-node --compiler-options '{"module":"commonjs"}' scripts/mockServer.ts &
+          echo "SERVER_PID=$!" >> $GITHUB_ENV
+          for i in $(seq 1 15); do
+            curl -sf http://127.0.0.1:3000/health && break || sleep 2
+          done
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          BASE_URL: http://127.0.0.1:3000
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Commit results.json back to agent branch
+        if: always()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin agent/auto-tests
+          git checkout agent/auto-tests
+          mkdir -p playwright-report
+          if [ -f playwright-report/results.json ]; then
+            git add playwright-report/results.json
+            git diff --cached --quiet || git commit -m "ci: update test results [skip ci]"
+            git push origin agent/auto-tests
+          else
+            echo "No results.json — skipping"
+          fi
+
+      - name: Kill mock server
+        if: always()
+        run: kill $SERVER_PID || true
+
+  jira-update:
+    name: Post Results to Jira
+    runs-on: ubuntu-latest
+    needs: playwright
+    if: always()
+
+    steps:
+      - name: Checkout agent branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/auto-tests
+          fetch-depth: 1
+
+      - name: Determine test outcome
+        id: outcome
+        run: |
+          if [ "${{ needs.playwright.result }}" == "success" ]; then
+            echo "status=PASSED" >> $GITHUB_OUTPUT
+          else
+            echo "status=FAILED" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Discover Jira issue keys from test files
+        id: keys
+        run: |
+          KEYS=$(ls tests/generated/*.spec.ts 2>/dev/null \
+            | xargs -I{} basename {} .spec.ts \
+            | tr '\n' ',' | sed 's/,$//') || true
+          if [ -z "$KEYS" ]; then
+            KEYS="${{ secrets.JIRA_ISSUE_KEY }}"
+          fi
+          echo "keys=$KEYS" >> $GITHUB_OUTPUT
+
+      - name: Post comment to each Jira story
+        env:
+          JIRA_HOST:      ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL:     ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          ISSUE_KEYS:     ${{ steps.keys.outputs.keys }}
+          RESULT:         ${{ steps.outcome.outputs.status }}
+          RUN_URL:        https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 -c "
+          import urllib.request, json, os, base64
+          host  = os.environ['JIRA_HOST']
+          email = os.environ['JIRA_EMAIL']
+          token = os.environ['JIRA_API_TOKEN']
+          keys  = [k.strip() for k in os.environ['ISSUE_KEYS'].split(',') if k.strip()]
+          result= os.environ['RESULT']
+          run_url=os.environ['RUN_URL']
+          icon  = 'PASS' if result == 'PASSED' else 'FAIL'
+          auth  = base64.b64encode(f'{email}:{token}'.encode()).decode()
+          headers={'Authorization':f'Basic {auth}','Content-Type':'application/json','Accept':'application/json'}
+          for key in keys:
+            msg=f'Story: {key}\nCI Result: {icon}\nRun: {run_url}\nTests auto-generated by Claude (claude-sonnet-4-6).'
+            body={'body':{'type':'doc','version':1,'content':[{'type':'paragraph','content':[{'type':'text','text':msg}]}]}}
+            req=urllib.request.Request(f'https://{host}/rest/api/3/issue/{key}/comment',data=json.dumps(body).encode(),headers=headers,method='POST')
+            with urllib.request.urlopen(req) as r:
+              print(f'{key}: comment posted ({r.status})')
+            if result=='PASSED':
+              req2=urllib.request.Request(f'https://{host}/rest/api/3/issue/{key}/transitions',headers={'Authorization':f'Basic {auth}','Accept':'application/json'})
+              with urllib.request.urlopen(req2) as r:
+                transitions=json.load(r).get('transitions',[])
+              done_id=next((t['id'] for t in transitions if t['name'].lower()=='done'),None)
+              if done_id:
+                req3=urllib.request.Request(f'https://{host}/rest/api/3/issue/{key}/transitions',data=json.dumps({'transition':{'id':done_id}}).encode(),headers=headers,method='POST')
+                with urllib.request.urlopen(req3) as r:
+                  print(f'{key}: transitioned to Done ({r.status})')
+          print('Done.')
+          "

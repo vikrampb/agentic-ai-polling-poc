@@ -1,0 +1,30 @@
+{
+  "name": "agentic-ai-polling-poc",
+  "version": "1.0.0",
+  "description": "Agentic AI — Polling Edition: auto-discovers Jira stories in Review, generates happy/boundary/negative tests, runs nightly CI, stores history, attaches results to Jira",
+  "scripts": {
+    "db:init": "ts-node --compiler-options '{\"module\":\"commonjs\"}' src/db/seed.ts",
+    "agent":   "ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/index.ts",
+    "poll":    "RUN_MODE=poll ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/index.ts",
+    "test":    "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "better-sqlite3":    "^9.6.0",
+    "dotenv":            "^16.4.5",
+    "express":           "^4.19.2",
+    "form-data":         "^4.0.0",
+    "octokit":           "^3.1.2",
+    "zod":               "^3.23.8"
+  },
+  "devDependencies": {
+    "@playwright/test":      "^1.44.0",
+    "@types/better-sqlite3": "^7.6.10",
+    "@types/express":        "^4.17.21",
+    "@types/node":           "^20.14.0",
+    "ts-node":               "^10.9.2",
+    "typescript":            "^5.4.5"
+  },
+  "engines": { "node": ">=20.0.0" }
+}

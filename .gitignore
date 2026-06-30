@@ -1,0 +1,10 @@
+.env
+node_modules/
+dist/
+data/
+local-reports/
+playwright-report/
+test-results/
+.DS_Store
+.env.swp
+*.swp
