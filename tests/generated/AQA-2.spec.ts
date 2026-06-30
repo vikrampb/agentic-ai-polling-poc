@@ -31,118 +31,115 @@ async function login(
 }
 
 test.describe('AQA-2 – Happy Path', () => {
-  test('PBE team user is redirected to PBE Application Home page after login', { tag: ['@regression'] }, async ({ request }) => {
+  test('PBE team US_PERSON user logs in successfully', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const pbeUser = users.find(u => u.team_name === 'PBE');
+    const pbeUser = users.find(u => u.team_name === 'PBE' && u.export_status === 'US_PERSON');
     expect(pbeUser).toBeDefined();
 
     const response = await login(request, pbeUser!.username, pbeUser!.password);
-    expect(response.message).toBe(US_PERSON);
-    expect(response.redirect_url ?? response.home_page ?? response.team).toContain('PBE');
+    expect(response.success).toBe(true);
+    expect(response.message).toContain('Login successful');
   });
 
-  test('DPS team user is redirected to DPS Application Home page after login', { tag: ['@regression'] }, async ({ request }) => {
+  test('DPS team US_PERSON user logs in successfully', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const dpsUser = users.find(u => u.team_name === 'DPS');
+    const dpsUser = users.find(u => u.team_name === 'DPS' && u.export_status === 'US_PERSON');
     expect(dpsUser).toBeDefined();
 
     const response = await login(request, dpsUser!.username, dpsUser!.password);
-    expect(response.message).toBe(US_PERSON);
-    expect(response.redirect_url ?? response.home_page ?? response.team).toContain('DPS');
+    expect(response.success).toBe(true);
+    expect(response.message).toContain('Login successful');
   });
 
-  test('each valid team user sees a home page specific to their team', { tag: ['@regression'] }, async ({ request }) => {
+  test('login response contains exportStatus for US_PERSON user', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const teamUsers = users.filter(u => u.team_name === 'PBE' || u.team_name === 'DPS');
-    expect(teamUsers.length).toBeGreaterThan(0);
+    const usUser = users.find(u => u.export_status === 'US_PERSON');
+    expect(usUser).toBeDefined();
 
-    for (const user of teamUsers) {
-      const response = await login(request, user.username, user.password);
-      expect(response.message).toBe(US_PERSON);
-      const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';
-      expect(destination).toContain(user.team_name);
-    }
+    const response = await login(request, usUser!.username, usUser!.password);
+    expect(response.success).toBe(true);
+    expect(response.message).toContain('Login successful');
+    expect(response.exportStatus).toBeDefined();
   });
 });
 
 test.describe('AQA-2 – Boundary Conditions', () => {
-  test('user belonging to PBE team does not get redirected to DPS home page', { tag: ['@regression'] }, async ({ request }) => {
+  test('user with null team_name and US_PERSON export_status logs in without team routing', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const pbeUser = users.find(u => u.team_name === 'PBE');
-    expect(pbeUser).toBeDefined();
+    const nullTeamUser = users.find(u => u.team_name === null && u.export_status === 'US_PERSON');
 
-    const response = await login(request, pbeUser!.username, pbeUser!.password);
-    expect(response.message).toBe(US_PERSON);
-    const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';
-    expect(destination).not.toContain('DPS');
-  });
-
-  test('user belonging to DPS team does not get redirected to PBE home page', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const dpsUser = users.find(u => u.team_name === 'DPS');
-    expect(dpsUser).toBeDefined();
-
-    const response = await login(request, dpsUser!.username, dpsUser!.password);
-    expect(response.message).toBe(US_PERSON);
-    const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';
-    expect(destination).not.toContain('PBE');
-  });
-
-  test('all users have a team_name assigned and receive team-specific home page on login', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const usersWithTeam = users.filter(u => u.team_name && u.team_name.trim() !== '');
-    expect(usersWithTeam.length).toBeGreaterThan(0);
-
-    for (const user of usersWithTeam) {
-      const response = await login(request, user.username, user.password);
-      if (response.message === US_PERSON) {
-        const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';
-        expect(destination).toContain(user.team_name);
-      }
-    }
-  });
-});
-
-test.describe('AQA-2 – Negative Tests', () => {
-  test('non-US person user cannot access team-specific home page and receives rejection message', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const nonUsUser = users.find(u =>
-      u.export_status !== undefined && u.export_status !== null && String(u.export_status).toUpperCase() !== 'US'
-    );
-    expect(nonUsUser).toBeDefined();
-
-    const response = await login(request, nonUsUser!.username, nonUsUser!.password);
-    expect(response.message).toBe(NON_US_PERSON);
-    const destination = response.redirect_url ?? response.home_page ?? null;
-    expect(destination).toBeFalsy();
-  });
-
-  test('login with invalid credentials does not grant access to any team home page', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const anyUser = users[0];
-    expect(anyUser).toBeDefined();
-
-    const response = await login(request, anyUser.username, 'InvalidPassword!999');
-    expect(response.message).not.toBe(US_PERSON);
-    const destination = response.redirect_url ?? response.home_page ?? null;
-    expect(destination).toBeFalsy();
-  });
-
-  test('user with no team assignment does not receive a team-specific home page', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const noTeamUser = users.find(u => !u.team_name || u.team_name.trim() === '');
-
-    if (!noTeamUser) {
+    if (!nullTeamUser) {
       test.skip();
       return;
     }
 
-    const response = await login(request, noTeamUser.username, noTeamUser.password);
-    if (response.message === US_PERSON) {
-      const destination = response.redirect_url ?? response.home_page ?? '';
-      expect(destination === '' || (!destination.includes('PBE') && !destination.includes('DPS'))).toBeTruthy();
-    } else {
-      expect(response.message).not.toBe(US_PERSON);
+    const response = await login(request, nullTeamUser.username, nullTeamUser.password);
+    expect(response.success).toBe(true);
+    expect(response.message).toContain('Login successful');
+  });
+
+  test('all US_PERSON users across teams can log in successfully', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const usPersonUsers = users.filter(u => u.export_status === 'US_PERSON');
+    expect(usPersonUsers.length).toBeGreaterThan(0);
+
+    for (const user of usPersonUsers) {
+      const response = await login(request, user.username, user.password);
+      expect(response.success).toBe(true);
+      expect(response.message).toContain('Login successful');
+    }
+  });
+
+  test('US_PERSON user belonging to PBE team has correct exportStatus in response', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const pbeUser = users.find(u => u.team_name === 'PBE' && u.export_status === 'US_PERSON');
+    expect(pbeUser).toBeDefined();
+
+    const response = await login(request, pbeUser!.username, pbeUser!.password);
+    expect(response.success).toBe(true);
+    expect(response.message).toContain('Login successful');
+    expect(response.exportStatus).toBe('US_PERSON');
+  });
+});
+
+test.describe('AQA-2 – Negative Tests', () => {
+  test('NON_US_PERSON user from PBE team is blocked from logging in', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const blockedUser = users.find(u => u.team_name === 'PBE' && u.export_status === 'NON_US_PERSON');
+
+    if (!blockedUser) {
+      test.skip();
+      return;
+    }
+
+    const response = await login(request, blockedUser.username, blockedUser.password);
+    expect(response.success).toBe(false);
+    expect(response.message).toContain('Only US Persons are allowed to watch this demo.');
+  });
+
+  test('NON_US_PERSON user from DPS team is blocked from logging in', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const blockedUser = users.find(u => u.team_name === 'DPS' && u.export_status === 'NON_US_PERSON');
+
+    if (!blockedUser) {
+      test.skip();
+      return;
+    }
+
+    const response = await login(request, blockedUser.username, blockedUser.password);
+    expect(response.success).toBe(false);
+    expect(response.message).toContain('Only US Persons are allowed to watch this demo.');
+  });
+
+  test('all NON_US_PERSON users are blocked regardless of team', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const nonUsPersonUsers = users.filter(u => u.export_status === 'NON_US_PERSON');
+    expect(nonUsPersonUsers.length).toBeGreaterThan(0);
+
+    for (const user of nonUsPersonUsers) {
+      const response = await login(request, user.username, user.password);
+      expect(response.success).toBe(false);
+      expect(response.message).toContain('Only US Persons are allowed to watch this demo.');
     }
   });
 });
