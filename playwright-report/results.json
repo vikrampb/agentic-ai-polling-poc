@@ -1,0 +1,748 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+      "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/playwright.config.ts",
+    "rootDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/23053bf61646703fbfb1dbc35e709712bc2296c2",
+        "commitHash": "23053bf61646703fbfb1dbc35e709712bc2296c2",
+        "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28475914859"
+      },
+      "gitCommit": {
+        "shortHash": "23053bf",
+        "hash": "23053bf61646703fbfb1dbc35e709712bc2296c2",
+        "subject": "fix: remove duplicate regression job from ci.yml",
+        "body": "fix: remove duplicate regression job from ci.yml\n",
+        "author": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782851359000
+        },
+        "committer": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782851359000
+        },
+        "branch": "main"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/23053bf61646703fbfb1dbc35e709712bc2296c2",
+            "commitHash": "23053bf61646703fbfb1dbc35e709712bc2296c2",
+            "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28475914859"
+          },
+          "gitCommit": {
+            "shortHash": "23053bf",
+            "hash": "23053bf61646703fbfb1dbc35e709712bc2296c2",
+            "subject": "fix: remove duplicate regression job from ci.yml",
+            "body": "fix: remove duplicate regression job from ci.yml\n",
+            "author": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782851359000
+            },
+            "committer": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782851359000
+            },
+            "branch": "main"
+          },
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "AQA-2.spec.ts",
+      "file": "AQA-2.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AQA-2 – Happy Path",
+          "file": "AQA-2.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "PBE team user is redirected to PBE Application Home page after login",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 38,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:40:35",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m\n \u001b[90m 39 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m pbeUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m pbeUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     expect(response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam)\u001b[33m.\u001b[39mtoContain(\u001b[32m'PBE'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 43 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  38 |\n  39 |     const response = await login(request, pbeUser!.username, pbeUser!.password);\n> 40 |     expect(response.message).toBe(US_PERSON);\n     |                                   ^\n  41 |     expect(response.redirect_url ?? response.home_page ?? response.team).toContain('PBE');\n  42 |   });\n  43 |\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:40:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:52.029Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Happy-Path-P-ac1b3-ation-Home-page-after-login/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-2618207fd4a95576aab7",
+              "file": "AQA-2.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "DPS team user is redirected to DPS Application Home page after login",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 35,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:50:35",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 35,
+                          "line": 50
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 48 |\u001b[39m\n \u001b[90m 49 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m dpsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m dpsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 50 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 51 |\u001b[39m     expect(response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam)\u001b[33m.\u001b[39mtoContain(\u001b[32m'DPS'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 52 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 35,
+                            "line": 50
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  48 |\n  49 |     const response = await login(request, dpsUser!.username, dpsUser!.password);\n> 50 |     expect(response.message).toBe(US_PERSON);\n     |                                   ^\n  51 |     expect(response.redirect_url ?? response.home_page ?? response.team).toContain('DPS');\n  52 |   });\n  53 |\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:50:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:52.640Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Happy-Path-D-c9a45-ation-Home-page-after-login/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 35,
+                        "line": 50
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-47f0cc1136cd58b69a6e",
+              "file": "AQA-2.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "each valid team user sees a home page specific to their team",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 38,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:61:37",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 37,
+                          "line": 61
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 59 |\u001b[39m     \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m user \u001b[36mof\u001b[39m teamUsers) {\n \u001b[90m 60 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m user\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m user\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 61 |\u001b[39m       expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 62 |\u001b[39m       \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[32m''\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 63 |\u001b[39m       expect(destination)\u001b[33m.\u001b[39mtoContain(user\u001b[33m.\u001b[39mteam_name)\u001b[33m;\u001b[39m\n \u001b[90m 64 |\u001b[39m     }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 37,
+                            "line": 61
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  59 |     for (const user of teamUsers) {\n  60 |       const response = await login(request, user.username, user.password);\n> 61 |       expect(response.message).toBe(US_PERSON);\n     |                                     ^\n  62 |       const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';\n  63 |       expect(destination).toContain(user.team_name);\n  64 |     }\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:61:37"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:53.234Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Happy-Path-e-2017e-page-specific-to-their-team/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 37,
+                        "line": 61
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-6385943d5021fea541ba",
+              "file": "AQA-2.spec.ts",
+              "line": 54,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-2 – Boundary Conditions",
+          "file": "AQA-2.spec.ts",
+          "line": 68,
+          "column": 6,
+          "specs": [
+            {
+              "title": "user belonging to PBE team does not get redirected to DPS home page",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 36,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:75:35",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 35,
+                          "line": 75
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 73 |\u001b[39m\n \u001b[90m 74 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m pbeUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m pbeUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 75 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 76 |\u001b[39m     \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[32m''\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 77 |\u001b[39m     expect(destination)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContain(\u001b[32m'DPS'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 78 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 35,
+                            "line": 75
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  73 |\n  74 |     const response = await login(request, pbeUser!.username, pbeUser!.password);\n> 75 |     expect(response.message).toBe(US_PERSON);\n     |                                   ^\n  76 |     const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';\n  77 |     expect(destination).not.toContain('DPS');\n  78 |   });\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:75:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:53.838Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Boundary-Con-8f1ce-redirected-to-DPS-home-page/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 35,
+                        "line": 75
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-93916b2f38a7aa50c164",
+              "file": "AQA-2.spec.ts",
+              "line": 69,
+              "column": 7
+            },
+            {
+              "title": "user belonging to DPS team does not get redirected to PBE home page",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:86:35",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 35,
+                          "line": 86
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 84 |\u001b[39m\n \u001b[90m 85 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m dpsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m dpsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 86 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[32m''\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 88 |\u001b[39m     expect(destination)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContain(\u001b[32m'PBE'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 89 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 35,
+                            "line": 86
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  84 |\n  85 |     const response = await login(request, dpsUser!.username, dpsUser!.password);\n> 86 |     expect(response.message).toBe(US_PERSON);\n     |                                   ^\n  87 |     const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';\n  88 |     expect(destination).not.toContain('PBE');\n  89 |   });\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:86:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:54.448Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Boundary-Con-1eab9-redirected-to-PBE-home-page/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 35,
+                        "line": 86
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-983f2d3bf04c103a1e00",
+              "file": "AQA-2.spec.ts",
+              "line": 80,
+              "column": 7
+            },
+            {
+              "title": "all users have a team_name assigned and receive team-specific home page on login",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:98:32",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 32,
+                          "line": 98
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  96 |\u001b[39m     \u001b[36mfor\u001b[39m (\u001b[36mconst\u001b[39m user \u001b[36mof\u001b[39m usersWithTeam) {\n \u001b[90m  97 |\u001b[39m       \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m user\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m user\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  98 |\u001b[39m       \u001b[36mif\u001b[39m (response\u001b[33m.\u001b[39mmessage \u001b[33m===\u001b[39m \u001b[33mUS_PERSON\u001b[39m) {\n \u001b[90m     |\u001b[39m                                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  99 |\u001b[39m         \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mteam \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[32m''\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 100 |\u001b[39m         expect(destination)\u001b[33m.\u001b[39mtoContain(user\u001b[33m.\u001b[39mteam_name)\u001b[33m;\u001b[39m\n \u001b[90m 101 |\u001b[39m       }\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 32,
+                            "line": 98
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n   96 |     for (const user of usersWithTeam) {\n   97 |       const response = await login(request, user.username, user.password);\n>  98 |       if (response.message === US_PERSON) {\n      |                                ^\n   99 |         const destination = response.redirect_url ?? response.home_page ?? response.team ?? '';\n  100 |         expect(destination).toContain(user.team_name);\n  101 |       }\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:98:32"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:55.046Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Boundary-Con-01618-specific-home-page-on-login/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 32,
+                        "line": 98
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-22708184c348ff73a221",
+              "file": "AQA-2.spec.ts",
+              "line": 91,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-2 – Negative Tests",
+          "file": "AQA-2.spec.ts",
+          "line": 106,
+          "column": 6,
+          "specs": [
+            {
+              "title": "non-US person user cannot access team-specific home page and receives rejection message",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37,
+                      "error": {
+                        "message": "ReferenceError: NON_US_PERSON is not defined",
+                        "stack": "ReferenceError: NON_US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:115:35",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 35,
+                          "line": 115
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 113 |\u001b[39m\n \u001b[90m 114 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m nonUsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m nonUsUser\u001b[33m!\u001b[39m\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 115 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoBe(\u001b[33mNON_US_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 116 |\u001b[39m     \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 117 |\u001b[39m     expect(destination)\u001b[33m.\u001b[39mtoBeFalsy()\u001b[33m;\u001b[39m\n \u001b[90m 118 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 35,
+                            "line": 115
+                          },
+                          "message": "ReferenceError: NON_US_PERSON is not defined\n\n  113 |\n  114 |     const response = await login(request, nonUsUser!.username, nonUsUser!.password);\n> 115 |     expect(response.message).toBe(NON_US_PERSON);\n      |                                   ^\n  116 |     const destination = response.redirect_url ?? response.home_page ?? null;\n  117 |     expect(destination).toBeFalsy();\n  118 |   });\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:115:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:55.629Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Negative-Tes-b702c--receives-rejection-message/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 35,
+                        "line": 115
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-b553607ec3cc83a701f2",
+              "file": "AQA-2.spec.ts",
+              "line": 107,
+              "column": 7
+            },
+            {
+              "title": "login with invalid credentials does not grant access to any team home page",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 35,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:126:39",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 39,
+                          "line": 126
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 124 |\u001b[39m\n \u001b[90m 125 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m anyUser\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m \u001b[32m'InvalidPassword!999'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 126 |\u001b[39m     expect(response\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[33mUS_PERSON\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 127 |\u001b[39m     \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 128 |\u001b[39m     expect(destination)\u001b[33m.\u001b[39mtoBeFalsy()\u001b[33m;\u001b[39m\n \u001b[90m 129 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 39,
+                            "line": 126
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  124 |\n  125 |     const response = await login(request, anyUser.username, 'InvalidPassword!999');\n> 126 |     expect(response.message).not.toBe(US_PERSON);\n      |                                       ^\n  127 |     const destination = response.redirect_url ?? response.home_page ?? null;\n  128 |     expect(destination).toBeFalsy();\n  129 |   });\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:126:39"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:56.230Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Negative-Tes-35cef-ccess-to-any-team-home-page/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 39,
+                        "line": 126
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-8e9eb14f2570bdeee666",
+              "file": "AQA-2.spec.ts",
+              "line": 120,
+              "column": 7
+            },
+            {
+              "title": "user with no team assignment does not receive a team-specific home page",
+              "ok": false,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 34,
+                      "error": {
+                        "message": "ReferenceError: US_PERSON is not defined",
+                        "stack": "ReferenceError: US_PERSON is not defined\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:141:30",
+                        "location": {
+                          "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                          "column": 30,
+                          "line": 141
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 139 |\u001b[39m\n \u001b[90m 140 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m login(request\u001b[33m,\u001b[39m noTeamUser\u001b[33m.\u001b[39musername\u001b[33m,\u001b[39m noTeamUser\u001b[33m.\u001b[39mpassword)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 141 |\u001b[39m     \u001b[36mif\u001b[39m (response\u001b[33m.\u001b[39mmessage \u001b[33m===\u001b[39m \u001b[33mUS_PERSON\u001b[39m) {\n \u001b[90m     |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 142 |\u001b[39m       \u001b[36mconst\u001b[39m destination \u001b[33m=\u001b[39m response\u001b[33m.\u001b[39mredirect_url \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m response\u001b[33m.\u001b[39mhome_page \u001b[33m?\u001b[39m\u001b[33m?\u001b[39m \u001b[32m''\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 143 |\u001b[39m       expect(destination \u001b[33m===\u001b[39m \u001b[32m''\u001b[39m \u001b[33m||\u001b[39m (\u001b[33m!\u001b[39mdestination\u001b[33m.\u001b[39mincludes(\u001b[32m'PBE'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mdestination\u001b[33m.\u001b[39mincludes(\u001b[32m'DPS'\u001b[39m)))\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m 144 |\u001b[39m     } \u001b[36melse\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                            "column": 30,
+                            "line": 141
+                          },
+                          "message": "ReferenceError: US_PERSON is not defined\n\n  139 |\n  140 |     const response = await login(request, noTeamUser.username, noTeamUser.password);\n> 141 |     if (response.message === US_PERSON) {\n      |                              ^\n  142 |       const destination = response.redirect_url ?? response.home_page ?? '';\n  143 |       expect(destination === '' || (!destination.includes('PBE') && !destination.includes('DPS'))).toBeTruthy();\n  144 |     } else {\n    at /home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts:141:30"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-06-30T21:07:56.824Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results/AQA-2-AQA-2-–-Negative-Tes-dfc14-e-a-team-specific-home-page/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-2.spec.ts",
+                        "column": 30,
+                        "line": 141
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d221958e005739514deb-c0a13b9345dd7450bbd7",
+              "file": "AQA-2.spec.ts",
+              "line": 131,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-06-30T21:07:51.408Z",
+    "duration": 5509.606000000001,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 9,
+    "flaky": 0
+  }
+}
