@@ -259,21 +259,9 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
       console.log(`   ✓  Regression history updated`);
     }
 
-    // Step 7c: Auto-trigger dedicated regression workflow
-    if (regressionPresent) {
-      console.log('\n🔖  Step 7c – Auto-triggering regression run…');
-      console.log('   (In production this is replaced by the configurable schedule in regression.yml)');
-      const { Octokit } = require('octokit');
-      const octokit2 = new Octokit({ auth: process.env.GITHUB_TOKEN });
-      await octokit2.rest.actions.createWorkflowDispatch({
-        owner: process.env.GITHUB_OWNER!,
-        repo:  process.env.GITHUB_REPO!,
-        workflow_id: 'regression.yml',
-        ref:   'main',
-        inputs: { triggered_by: 'agent' },
-      });
-      console.log('   ✓  Regression workflow triggered — check GitHub Actions for results');
-    }
+    // Regression workflow runs independently — trigger manually via:
+    //   gh workflow run regression.yml --repo YOUR_USERNAME/agentic-ai-polling-poc
+    // Or configure the schedule in .github/workflows/regression.yml
 
     // Step 7b: Open report locally (polling mode skips UI, interactive opens browser)
     if (RUN_MODE === 'interactive' && reportResult.reportPath) {
@@ -353,10 +341,6 @@ async function runPolling(): Promise<void> {
   console.log(`    Project  : ${process.env.JIRA_PROJECT_KEY ?? 'AQA'}`);
   console.log(`    Status   : ${process.env.JIRA_READY_STATUS ?? 'In Review'}\n`);
 
-  // Check agent branch for existing @regression tests on every poll startup
-  console.log('\n🔍  Checking for existing @regression tests on agent branch…');
-  await checkAndTriggerRegression();
-
   // Initial poll
   const suite = await pollOnce();
 
@@ -379,7 +363,6 @@ async function runPolling(): Promise<void> {
       }));
       await runPipeline(stories);
     },
-    checkAndTriggerRegression,
   );
 
   // Graceful shutdown
