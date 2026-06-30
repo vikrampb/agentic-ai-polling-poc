@@ -31,7 +31,7 @@ async function login(
 }
 
 test.describe('AQA-1 – Happy Path', () => {
-  test('US_PERSON user can log in and receives welcome message', async ({ request }) => {
+  test('US_PERSON user can log in and receives success message', async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(u => u.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
@@ -39,7 +39,7 @@ test.describe('AQA-1 – Happy Path', () => {
     expect(response.message).toBe('Login successful. Welcome!');
   });
 
-  test('All US_PERSON users can log in successfully', async ({ request }) => {
+  test('All US_PERSON users receive the correct success message on login', async ({ request }) => {
     const users = await getUsers(request);
     const usUsers = users.filter(u => u.export_status === 'US_PERSON');
     expect(usUsers.length).toBeGreaterThan(0);
@@ -49,7 +49,7 @@ test.describe('AQA-1 – Happy Path', () => {
     }
   });
 
-  test('US_PERSON login response does not contain non-US error message', async ({ request }) => {
+  test('US_PERSON user login response does not contain a non-US error message', async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(u => u.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
@@ -59,7 +59,7 @@ test.describe('AQA-1 – Happy Path', () => {
 });
 
 test.describe('AQA-1 – Boundary Conditions', () => {
-  test('First US_PERSON user in the list can log in and receives welcome message', async ({ request }) => {
+  test('First US_PERSON user in the list can log in successfully', async ({ request }) => {
     const users = await getUsers(request);
     const usUsers = users.filter(u => u.export_status === 'US_PERSON');
     expect(usUsers.length).toBeGreaterThan(0);
@@ -68,7 +68,7 @@ test.describe('AQA-1 – Boundary Conditions', () => {
     expect(response.message).toBe('Login successful. Welcome!');
   });
 
-  test('Last US_PERSON user in the list can log in and receives welcome message', async ({ request }) => {
+  test('Last US_PERSON user in the list can log in successfully', async ({ request }) => {
     const users = await getUsers(request);
     const usUsers = users.filter(u => u.export_status === 'US_PERSON');
     expect(usUsers.length).toBeGreaterThan(0);
@@ -77,7 +77,7 @@ test.describe('AQA-1 – Boundary Conditions', () => {
     expect(response.message).toBe('Login successful. Welcome!');
   });
 
-  test('First NON_US_PERSON user in the list cannot log in and receives rejection message', async ({ request }) => {
+  test('First NON_US_PERSON user in the list is denied login', async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUsers = users.filter(u => u.export_status === 'NON_US_PERSON');
     expect(nonUsUsers.length).toBeGreaterThan(0);
@@ -88,7 +88,7 @@ test.describe('AQA-1 – Boundary Conditions', () => {
 });
 
 test.describe('AQA-1 – Negative Tests', () => {
-  test('NON_US_PERSON user cannot log in and receives correct error message', async ({ request }) => {
+  test('NON_US_PERSON user cannot log in and receives the correct error message', async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(u => u.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
@@ -96,7 +96,7 @@ test.describe('AQA-1 – Negative Tests', () => {
     expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
   });
 
-  test('All NON_US_PERSON users are denied login', async ({ request }) => {
+  test('All NON_US_PERSON users are denied login with the correct error message', async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUsers = users.filter(u => u.export_status === 'NON_US_PERSON');
     expect(nonUsUsers.length).toBeGreaterThan(0);
@@ -106,7 +106,7 @@ test.describe('AQA-1 – Negative Tests', () => {
     }
   });
 
-  test('NON_US_PERSON login response does not contain the welcome message', async ({ request }) => {
+  test('NON_US_PERSON user login response does not contain the success message', async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(u => u.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
