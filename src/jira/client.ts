@@ -31,6 +31,7 @@ export interface JiraIssue {
   description: string;
   acceptanceCriteria: string;
   status: string;
+  labels: string[];
 }
 
 function adfToText(node: unknown): string {
@@ -44,7 +45,7 @@ function adfToText(node: unknown): string {
 }
 
 export async function fetchIssue(issueKey: string): Promise<JiraIssue> {
-  const res = await jiraFetch(`/issue/${issueKey}`);
+  const res = await jiraFetch(`/issue/${issueKey}?fields=summary,description,status,labels,customfield_10016`);
   if (!res.ok) throw new Error(`Jira error ${res.status}: ${await res.text()}`);
 
   const data = (await res.json()) as {
@@ -53,6 +54,7 @@ export async function fetchIssue(issueKey: string): Promise<JiraIssue> {
       summary: string;
       description: unknown;
       status: { name: string };
+      labels?: string[];
       customfield_10016?: unknown;
     };
   };
@@ -67,6 +69,7 @@ export async function fetchIssue(issueKey: string): Promise<JiraIssue> {
     description,
     acceptanceCriteria,
     status: data.fields.status.name,
+    labels: data.fields.labels ?? [],
   };
 }
 

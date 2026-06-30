@@ -57,14 +57,20 @@ async function login(
 
 // ── Auto-generate happy path, boundary and negative tests via Claude ──────────
 async function generateAutoTests(issue: JiraIssue): Promise<string> {
-  // Detect if AC/description mentions regression
+  // Detect regression via Jira label OR keywords in AC/description
+  const labelRegression = issue.labels.some(
+    (l) => l.toLowerCase() === 'regression'
+  );
   const acText = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
-  const isRegression = acText.includes('regression') ||
+  const textRegression = acText.includes('regression') ||
     acText.includes('existing functionality') ||
     acText.includes('backward compatibility') ||
     acText.includes('must not break') ||
     acText.includes('should not break') ||
     acText.includes('@regression');
+  const isRegression = labelRegression || textRegression;
+  if (labelRegression) console.log(`         🏷️   Jira label "Regression" detected — tagging tests`);
+  if (textRegression && !labelRegression) console.log(`         🏷️   Regression keyword in AC/description — tagging tests`);
 
   const regressionInstruction = isRegression
     ? `- IMPORTANT: This story requires regression tagging. For every test() block in
@@ -73,14 +79,20 @@ async function generateAutoTests(issue: JiraIssue): Promise<string> {
   Do this for every single test() block without exception.`
     : `- Do NOT add any test.tag() annotations to tests.`;
 
-  // Detect if AC/description mentions regression
+  // Detect regression via Jira label OR keywords in AC/description
+  const labelRegression = issue.labels.some(
+    (l) => l.toLowerCase() === 'regression'
+  );
   const acText = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
-  const isRegression = acText.includes('regression') ||
+  const textRegression = acText.includes('regression') ||
     acText.includes('existing functionality') ||
     acText.includes('backward compatibility') ||
     acText.includes('must not break') ||
     acText.includes('should not break') ||
     acText.includes('@regression');
+  const isRegression = labelRegression || textRegression;
+  if (labelRegression) console.log(`         🏷️   Jira label "Regression" detected — tagging tests`);
+  if (textRegression && !labelRegression) console.log(`         🏷️   Regression keyword in AC/description — tagging tests`);
 
   const regressionInstruction = isRegression
     ? `- IMPORTANT: This story requires regression tagging. For every test() block in
