@@ -1,0 +1,496 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+      "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/playwright.config.ts",
+    "rootDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "commitHash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28538730070"
+      },
+      "gitCommit": {
+        "shortHash": "c046a13",
+        "hash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "subject": "fix: remove duplicate jira-update job from ci.yml",
+        "body": "fix: remove duplicate jira-update job from ci.yml\n",
+        "author": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782921086000
+        },
+        "committer": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782921086000
+        },
+        "branch": "main"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "commitHash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28538730070"
+          },
+          "gitCommit": {
+            "shortHash": "c046a13",
+            "hash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "subject": "fix: remove duplicate jira-update job from ci.yml",
+            "body": "fix: remove duplicate jira-update job from ci.yml\n",
+            "author": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782921086000
+            },
+            "committer": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782921086000
+            },
+            "branch": "main"
+          },
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "AQA-1.spec.ts",
+      "file": "AQA-1.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AQA-1 – Happy Path",
+          "file": "AQA-1.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "US_PERSON user can log in successfully",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 36,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.229Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-edb324c2ae5cfe89c556",
+              "file": "AQA-1.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "US_PERSON user login response contains correct exportStatus",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.299Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-e2941d2336fa339a8826",
+              "file": "AQA-1.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "all US_PERSON users can log in successfully",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 36,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.338Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-6ad3e976ffc27a22da32",
+              "file": "AQA-1.spec.ts",
+              "line": 54,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-1 – Boundary Conditions",
+          "file": "AQA-1.spec.ts",
+          "line": 67,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NON_US_PERSON user is blocked and receives correct error message",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.391Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-2df34ba3f7284224d73c",
+              "file": "AQA-1.spec.ts",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "user list contains both US_PERSON and NON_US_PERSON export statuses",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.416Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-a1f9b770495a3ebedf17",
+              "file": "AQA-1.spec.ts",
+              "line": 78,
+              "column": 7
+            },
+            {
+              "title": "US_PERSON user with team_name null can still log in successfully",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                        "line": 92,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 6,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.433Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated/AQA-1.spec.ts",
+                            "line": 92,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-6a5cc55362ebddca0a47",
+              "file": "AQA-1.spec.ts",
+              "line": 87,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-1 – Negative Tests",
+          "file": "AQA-1.spec.ts",
+          "line": 102,
+          "column": 6,
+          "specs": [
+            {
+              "title": "all NON_US_PERSON users are blocked from logging in",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 21,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.448Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-a417d83deef3a109c56f",
+              "file": "AQA-1.spec.ts",
+              "line": 103,
+              "column": 7
+            },
+            {
+              "title": "NON_US_PERSON user login response does not indicate success",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.478Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-c532ec6bfbc1f1204637",
+              "file": "AQA-1.spec.ts",
+              "line": 115,
+              "column": 7
+            },
+            {
+              "title": "NON_US_PERSON user with valid credentials is still denied access",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:22:46.495Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-7cdf6b380ee381bb805d",
+              "file": "AQA-1.spec.ts",
+              "line": 125,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-01T18:22:45.639Z",
+    "duration": 894.7760000000001,
+    "expected": 8,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
