@@ -1,20 +1,16 @@
 name: Regression Tests
 
 on:
-  # ── Configurable schedule ──────────────────────────────────────────────────
-  # Uncomment ONE of the following to set the automatic regression schedule:
-  #
+  # Configurable schedule - uncomment one:
   # schedule:
   #   - cron: '0 * * * *'    # Every hour
-  #   - cron: '0 0 * * *'    # Nightly at midnight UTC
-  #   - cron: '0 0 * * 0'    # Weekly on Sunday at midnight UTC
+  #   - cron: '0 0 * * *'    # Nightly
+  #   - cron: '0 0 * * 0'    # Weekly
 
-  # ── On-demand triggers ─────────────────────────────────────────────────────
-  # Triggered automatically by the polling agent when @regression tests exist
   workflow_dispatch:
     inputs:
       triggered_by:
-        description: 'What triggered this run (agent/manual/schedule)'
+        description: 'What triggered this run'
         required: false
         default: 'manual'
 
@@ -35,11 +31,32 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Overlay test files from agent/auto-tests branch
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync @regression tags with Jira Regression label
+        run: npx ts-node --compiler-options '{"module":"commonjs"}' src/agent/retag.ts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JIRA_HOST:         ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL:        ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN:    ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY:  AQA
+          GITHUB_TOKEN:      ${{ secrets.GITHUB_PAT }}
+          GITHUB_OWNER:      ${{ secrets.GITHUB_OWNER }}
+          GITHUB_REPO:       ${{ secrets.GITHUB_REPO }}
+          GITHUB_BRANCH:     agent/auto-tests
+
+      - name: Overlay freshly synced test files from agent branch
         run: |
           git fetch origin agent/auto-tests
           git checkout origin/agent/auto-tests -- tests/ playwright.config.ts || true
-          echo "Test files:"
+          echo "Test files after sync:"
           find tests/ -name "*.spec.ts" 2>/dev/null || echo "No tests found"
 
       - name: Check for @regression tagged tests
@@ -51,18 +68,8 @@ jobs:
             echo "Found ${COUNT} @regression test(s)"
           else
             echo "has_regression=false" >> $GITHUB_OUTPUT
-            echo "No @regression tests found — skipping run"
+            echo "No @regression tests found after sync"
           fi
-
-      - name: Setup Node.js
-        if: steps.check.outputs.has_regression == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        if: steps.check.outputs.has_regression == 'true'
-        run: npm install
 
       - name: Install Playwright browsers
         if: steps.check.outputs.has_regression == 'true'
@@ -102,10 +109,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin agent/auto-tests
           git checkout agent/auto-tests
-
           mkdir -p regression-history
 
-          # Determine next run number
           EXISTING=$(ls regression-history/regression-*.html 2>/dev/null | wc -l | tr -d ' ')
           NEXT=$((EXISTING + 1))
           PADDED=$(printf "%03d" $NEXT)
@@ -113,48 +118,29 @@ jobs:
           CONCLUSION="${{ job.status }}"
           FILENAME="regression-${PADDED}-${TIMESTAMP}-${CONCLUSION}.html"
 
-          # Copy report if it exists
           if [ -f playwright-report/index.html ]; then
             cp playwright-report/index.html regression-history/${FILENAME}
-            echo "Copied Playwright HTML report to ${FILENAME}"
           else
-            echo "Playwright HTML report not found — writing placeholder"
-            echo "<html><body><h1>Regression Run #${NEXT}</h1><p>Result: ${CONCLUSION}</p></body></html>" > regression-history/${FILENAME}
+            echo "<html><body><h1>Regression Run #${NEXT} - ${CONCLUSION}</h1></body></html>" > regression-history/${FILENAME}
           fi
 
-          # Prune to last 10
           ls -t regression-history/regression-*.html 2>/dev/null | tail -n +11 | xargs rm -f || true
 
-          # Rebuild index
-          python3 << 'PYEOF'
-          import os, glob
-
-          files = sorted(glob.glob('regression-history/regression-*.html'), reverse=True)
-          rows = ""
-          for f in files:
-              name = os.path.basename(f)
-              parts = name.replace('.html','').split('-')
-              num = parts[1] if len(parts) > 1 else '?'
-              conclusion = parts[-1] if len(parts) > 1 else '?'
-              icon = '✅' if conclusion in ('passed', 'success') else '❌'
-              rows += f'<tr><td>#{num}</td><td>{name}</td><td>{icon} {conclusion.upper()}</td><td><a href="{name}">View</a></td></tr>\n'
-
-          html = f"""<!DOCTYPE html>
-          <html><head><meta charset="UTF-8"><title>Regression History</title>
-          <style>body{{font-family:system-ui;background:#0f172a;color:#e2e8f0;padding:2rem;max-width:800px;margin:0 auto}}
-          h1{{color:#f8fafc}}table{{width:100%;border-collapse:collapse;background:#1e293b;border-radius:8px;overflow:hidden}}
-          th{{padding:.75rem;text-align:left;background:#162032;color:#64748b;font-size:.75rem;text-transform:uppercase}}
-          td{{padding:.75rem;border-top:1px solid #334155}}a{{color:#4FC3F7}}</style></head>
-          <body><h1>Regression Run History</h1>
-          <p style="color:#64748b">Runs filtered to @regression tagged tests only</p>
-          <table><thead><tr><th>Run</th><th>File</th><th>Result</th><th>Report</th></tr></thead>
-          <tbody>{rows}</tbody></table></body></html>"""
-
-          with open('regression-history/index.html', 'w') as idx:
-              idx.write(html)
-
-          print(f"Index written with {len(files)} entries")
-          PYEOF
+          python3 -c "
+import os, glob
+files = sorted(glob.glob('regression-history/regression-*.html'), reverse=True)
+rows = ''
+for f in files:
+    name = os.path.basename(f)
+    parts = name.replace('.html','').split('-')
+    num = parts[1] if len(parts) > 1 else '?'
+    conclusion = parts[-1] if len(parts) > 1 else '?'
+    icon = chr(9989) if 'success' in conclusion or 'passed' in conclusion else chr(10060)
+    rows += '<tr><td>#' + num + '</td><td>' + name + '</td><td>' + icon + ' ' + conclusion.upper() + '</td><td><a href=\"' + name + '\">View</a></td></tr>'
+html = '<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Regression History</title><style>body{font-family:system-ui;background:#0f172a;color:#e2e8f0;padding:2rem;max-width:800px;margin:0 auto}h1{color:#f8fafc}table{width:100%;border-collapse:collapse;background:#1e293b;border-radius:8px;overflow:hidden}th{padding:.75rem;text-align:left;background:#162032;color:#64748b;font-size:.75rem;text-transform:uppercase}td{padding:.75rem;border-top:1px solid #334155}a{color:#4FC3F7}</style></head><body><h1>Regression Run History</h1><table><thead><tr><th>Run</th><th>File</th><th>Result</th><th>Report</th></tr></thead><tbody>' + rows + '</tbody></table></body></html>'
+open('regression-history/index.html', 'w').write(html)
+print('Index written with', len(files), 'entries')
+"
 
           git add regression-history/
           git diff --cached --quiet || git commit -m "ci: regression run #${NEXT} [skip ci]"
