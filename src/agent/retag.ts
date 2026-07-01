@@ -192,8 +192,16 @@ async function main(): Promise<void> {
         await removeRegressionTags(key);
         removed++;
       } else {
-        console.log(`\n   ✓  ${key} has no @regression tags — no change needed`);
-        skipped++;
+        // Even if we think it has no tags locally, check the branch version
+        const branchContent = await readSpecFromBranch(key);
+        if (branchContent && branchContent.includes('@regression')) {
+          console.log(`\n   ▶  ${key} has @regression tags on branch but no Regression label — removing…`);
+          await removeRegressionTags(key);
+          removed++;
+        } else {
+          console.log(`\n   ✓  ${key} has no @regression tags — no change needed`);
+          skipped++;
+        }
       }
     }
 
