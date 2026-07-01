@@ -1,37 +1,24 @@
 name: Regression Tests
-# updated
 
 on:
-  # Configurable schedule - uncomment one:
-  # schedule:
-  #   - cron: '0 * * * *'    # Every hour
-  #   - cron: '0 0 * * *'    # Nightly
-  #   - cron: '0 0 * * 0'    # Weekly
-
   workflow_dispatch:
     inputs:
       triggered_by:
         description: 'What triggered this run'
         required: false
         default: 'manual'
-
-  workflow_dispatch:
-    inputs:
-      triggered_by:
-        description: 'What triggered this run'
-        required: false
-        default: 'manual'
+  schedule:
+    - cron: '0 0 * * *'
 
 permissions:
   contents: write
-  actions:  read
+  actions: read
 
 jobs:
   regression:
-    name: Run @regression Tests
+    name: Run Regression Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -47,43 +34,40 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Sync @regression tags with Jira Regression label
+      - name: Sync regression tags with Jira
         run: npx ts-node --compiler-options '{"module":"commonjs"}' src/agent/retag.ts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          JIRA_HOST:         ${{ secrets.JIRA_HOST }}
-          JIRA_EMAIL:        ${{ secrets.JIRA_EMAIL }}
-          JIRA_API_TOKEN:    ${{ secrets.JIRA_API_TOKEN }}
-          JIRA_PROJECT_KEY:  AQA
-          GITHUB_TOKEN:      ${{ secrets.GH_PAT }}
-          GITHUB_OWNER:      ${{ secrets.GH_OWNER }}
-          GITHUB_REPO:       ${{ secrets.GH_REPO }}
-          GITHUB_BRANCH:     agent/auto-tests
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: AQA
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_OWNER: ${{ secrets.GH_OWNER }}
+          GITHUB_REPO: ${{ secrets.GH_REPO }}
+          GITHUB_BRANCH: agent/auto-tests
 
-      - name: Overlay freshly synced test files from agent branch
+      - name: Overlay test files from agent branch
         run: |
           git fetch origin agent/auto-tests
           git checkout origin/agent/auto-tests -- tests/ playwright.config.ts || true
-          echo "Test files after sync:"
-          find tests/ -name "*.spec.ts" 2>/dev/null || echo "No tests found"
 
-      - name: Check for @regression tagged tests
+      - name: Check for regression tests
         id: check
         run: |
           if grep -r "@regression" tests/generated/ --include="*.spec.ts" -l 2>/dev/null | grep -q .; then
-            COUNT=$(grep -r "@regression" tests/generated/ --include="*.spec.ts" | wc -l | tr -d ' ')
             echo "has_regression=true" >> $GITHUB_OUTPUT
-            echo "Found ${COUNT} @regression test(s)"
+            echo "Regression tests found"
           else
             echo "has_regression=false" >> $GITHUB_OUTPUT
-            echo "No @regression tests found after sync"
+            echo "No regression tests found"
           fi
 
-      - name: Install Playwright browsers
+      - name: Install Playwright
         if: steps.check.outputs.has_regression == 'true'
         run: npx playwright install --with-deps chromium
 
-      - name: Seed SQLite database
+      - name: Seed database
         if: steps.check.outputs.has_regression == 'true'
         run: npx ts-node --compiler-options '{"module":"commonjs"}' src/db/seed.ts
 
@@ -92,17 +76,15 @@ jobs:
         run: |
           npx ts-node --compiler-options '{"module":"commonjs"}' scripts/mockServer.ts &
           echo "SERVER_PID=$!" >> $GITHUB_ENV
-          for i in $(seq 1 15); do
-            curl -sf http://127.0.0.1:3000/health && break || sleep 2
-          done
+          for i in $(seq 1 15); do curl -sf http://127.0.0.1:3000/health && break || sleep 2; done
 
-      - name: Run @regression tests
+      - name: Run regression tests
         if: steps.check.outputs.has_regression == 'true'
         run: npx playwright test --grep @regression --reporter=html,json
         env:
           BASE_URL: http://127.0.0.1:3000
 
-      - name: Upload regression report artifact
+      - name: Upload report artifact
         if: steps.check.outputs.has_regression == 'true' && always()
         uses: actions/upload-artifact@v4
         with:
@@ -110,46 +92,24 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Commit regression results to agent branch
+      - name: Save results to agent branch
         if: steps.check.outputs.has_regression == 'true' && always()
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin agent/auto-tests
           git checkout agent/auto-tests
           mkdir -p regression-history
-
-          EXISTING=$(ls regression-history/regression-*.html 2>/dev/null | wc -l | tr -d ' ')
-          NEXT=$((EXISTING + 1))
+          NEXT=$(($(ls regression-history/regression-*.html 2>/dev/null | wc -l | tr -d ' ') + 1))
           PADDED=$(printf "%03d" $NEXT)
           TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S)
-          CONCLUSION="${{ job.status }}"
-          FILENAME="regression-${PADDED}-${TIMESTAMP}-${CONCLUSION}.html"
-
+          FILENAME="regression-${PADDED}-${TIMESTAMP}-${{ job.status }}.html"
           if [ -f playwright-report/index.html ]; then
             cp playwright-report/index.html regression-history/${FILENAME}
           else
-            echo "<html><body><h1>Regression Run #${NEXT} - ${CONCLUSION}</h1></body></html>" > regression-history/${FILENAME}
+            echo "<html><body><h1>Regression Run #${NEXT}</h1><p>${{ job.status }}</p></body></html>" > regression-history/${FILENAME}
           fi
-
           ls -t regression-history/regression-*.html 2>/dev/null | tail -n +11 | xargs rm -f || true
-
-          python3 -c "
-import os, glob
-files = sorted(glob.glob('regression-history/regression-*.html'), reverse=True)
-rows = ''
-for f in files:
-    name = os.path.basename(f)
-    parts = name.replace('.html','').split('-')
-    num = parts[1] if len(parts) > 1 else '?'
-    conclusion = parts[-1] if len(parts) > 1 else '?'
-    icon = chr(9989) if 'success' in conclusion or 'passed' in conclusion else chr(10060)
-    rows += '<tr><td>#' + num + '</td><td>' + name + '</td><td>' + icon + ' ' + conclusion.upper() + '</td><td><a href=\"' + name + '\">View</a></td></tr>'
-html = '<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Regression History</title><style>body{font-family:system-ui;background:#0f172a;color:#e2e8f0;padding:2rem;max-width:800px;margin:0 auto}h1{color:#f8fafc}table{width:100%;border-collapse:collapse;background:#1e293b;border-radius:8px;overflow:hidden}th{padding:.75rem;text-align:left;background:#162032;color:#64748b;font-size:.75rem;text-transform:uppercase}td{padding:.75rem;border-top:1px solid #334155}a{color:#4FC3F7}</style></head><body><h1>Regression Run History</h1><table><thead><tr><th>Run</th><th>File</th><th>Result</th><th>Report</th></tr></thead><tbody>' + rows + '</tbody></table></body></html>'
-open('regression-history/index.html', 'w').write(html)
-print('Index written with', len(files), 'entries')
-"
-
           git add regression-history/
           git diff --cached --quiet || git commit -m "ci: regression run #${NEXT} [skip ci]"
           git push origin agent/auto-tests
