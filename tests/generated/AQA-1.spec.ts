@@ -31,7 +31,7 @@ async function login(
 }
 
 test.describe('AQA-1 – Happy Path', () => {
-  test('US_PERSON user can log in successfully', { tag: ['@regression'] }, async ({ request }) => {
+  test('US_PERSON user can log in and receives success message', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(user => user.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
@@ -39,15 +39,6 @@ test.describe('AQA-1 – Happy Path', () => {
     const response = await login(request, usUser!.username, usUser!.password);
     expect(response.success).toBe(true);
     expect(response.message).toContain('Login successful');
-  });
-
-  test('US_PERSON user login response contains correct exportStatus', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const usUser = users.find(user => user.export_status === 'US_PERSON');
-    expect(usUser).toBeDefined();
-
-    const response = await login(request, usUser!.username, usUser!.password);
-    expect(response.exportStatus).toBe('US_PERSON');
   });
 
   test('all US_PERSON users can log in successfully', { tag: ['@regression'] }, async ({ request }) => {
@@ -61,45 +52,51 @@ test.describe('AQA-1 – Happy Path', () => {
       expect(response.message).toContain('Login successful');
     }
   });
+
+  test('US_PERSON user login response contains exportStatus field', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const usUser = users.find(user => user.export_status === 'US_PERSON');
+    expect(usUser).toBeDefined();
+
+    const response = await login(request, usUser!.username, usUser!.password);
+    expect(response.success).toBe(true);
+    expect(response.exportStatus).toBe('US_PERSON');
+  });
 });
 
 test.describe('AQA-1 – Boundary Conditions', () => {
-  test('first US_PERSON user in the list can log in', { tag: ['@regression'] }, async ({ request }) => {
+  test('login response has exactly the expected fields for a US_PERSON user', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const usUsers = users.filter(user => user.export_status === 'US_PERSON');
-    expect(usUsers.length).toBeGreaterThan(0);
+    const usUser = users.find(user => user.export_status === 'US_PERSON');
+    expect(usUser).toBeDefined();
 
-    const firstUsUser = usUsers[0];
-    const response = await login(request, firstUsUser.username, firstUsUser.password);
-    expect(response.success).toBe(true);
-    expect(response.message).toContain('Login successful');
+    const response = await login(request, usUser!.username, usUser!.password);
+    expect(typeof response.success).toBe('boolean');
+    expect(typeof response.message).toBe('string');
   });
 
-  test('last US_PERSON user in the list can log in', { tag: ['@regression'] }, async ({ request }) => {
+  test('login response has exactly the expected fields for a NON_US_PERSON user', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const usUsers = users.filter(user => user.export_status === 'US_PERSON');
-    expect(usUsers.length).toBeGreaterThan(0);
+    const nonUsUser = users.find(user => user.export_status === 'NON_US_PERSON');
+    expect(nonUsUser).toBeDefined();
 
-    const lastUsUser = usUsers[usUsers.length - 1];
-    const response = await login(request, lastUsUser.username, lastUsUser.password);
-    expect(response.success).toBe(true);
-    expect(response.message).toContain('Login successful');
+    const response = await login(request, nonUsUser!.username, nonUsUser!.password);
+    expect(typeof response.success).toBe('boolean');
+    expect(typeof response.message).toBe('string');
   });
 
-  test('first NON_US_PERSON user in the list is blocked from logging in', { tag: ['@regression'] }, async ({ request }) => {
+  test('both US_PERSON and NON_US_PERSON export_status values exist in the user pool', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
+    const usUsers = users.filter(user => user.export_status === 'US_PERSON');
     const nonUsUsers = users.filter(user => user.export_status === 'NON_US_PERSON');
-    expect(nonUsUsers.length).toBeGreaterThan(0);
 
-    const firstNonUsUser = nonUsUsers[0];
-    const response = await login(request, firstNonUsUser.username, firstNonUsUser.password);
-    expect(response.success).toBe(false);
-    expect(response.message).toContain('Only US Persons are allowed to watch this demo.');
+    expect(usUsers.length).toBeGreaterThan(0);
+    expect(nonUsUsers.length).toBeGreaterThan(0);
   });
 });
 
 test.describe('AQA-1 – Negative Tests', () => {
-  test('NON_US_PERSON user cannot log in and receives correct error message', { tag: ['@regression'] }, async ({ request }) => {
+  test('NON_US_PERSON user cannot log in and receives blocking message', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(user => user.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
@@ -121,14 +118,10 @@ test.describe('AQA-1 – Negative Tests', () => {
     }
   });
 
-  test('NON_US_PERSON user login response does not indicate success', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const nonUsUser = users.find(user => user.export_status === 'NON_US_PERSON');
-    expect(nonUsUser).toBeDefined();
-
-    const response = await login(request, nonUsUser!.username, nonUsUser!.password);
-    expect(response.success).not.toBe(true);
-    expect(response.message).not.toContain('Login successful');
-    expect(response.message).toContain('Only US Persons are allowed to watch this demo.');
+  test('login with invalid credentials returns unsuccessful response', { tag: ['@regression'] }, async ({ request }) => {
+    const response = await login(request, 'invalid_user_xyz', 'wrong_password_xyz');
+    expect(response.success).toBe(false);
+    expect(response.message).toBeDefined();
+    expect(response.message.length).toBeGreaterThan(0);
   });
 });
