@@ -43,8 +43,8 @@ const users = [
   { name: 'Hawkeye',         export_status: 'US_PERSON',     username: 'hawkeye',         password_hash: 'Barton2025!',    team_name: 'PBE' },
   { name: 'War Machine',     export_status: 'US_PERSON',     username: 'war.machine',     password_hash: 'Rhodes2025!',    team_name: 'DPS' },
   // ── 4 NON_US_PERSON — team_name left empty ───────────────────────────────
-  { name: 'Green Goblin',    export_status: 'NON_US_PERSON', username: 'green.goblin',    password_hash: 'OsCorp2025!',    team_name: null  },
-  { name: 'Doctor Doom',     export_status: 'NON_US_PERSON', username: 'doctor.doom',     password_hash: 'Latveria2025!',  team_name: null  },
+  { name: 'Green Goblin',    export_status: 'NON_US_PERSON', username: 'green.goblin',    password_hash: 'OsCorp2025!',    team_name: 'PBE' },
+  { name: 'Doctor Doom',     export_status: 'NON_US_PERSON', username: 'doctor.doom',     password_hash: 'Latveria2025!',  team_name: 'DPS' },
   { name: 'Red Skull',       export_status: 'NON_US_PERSON', username: 'red.skull',       password_hash: 'Hydra2025!',     team_name: null  },
   { name: 'Loki',            export_status: 'NON_US_PERSON', username: 'loki',            password_hash: 'Asgard2025!',    team_name: null  },
 ];
