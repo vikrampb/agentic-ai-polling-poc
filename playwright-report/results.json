@@ -1,0 +1,460 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+      "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/playwright.config.ts",
+    "rootDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "commitHash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28538939660"
+      },
+      "gitCommit": {
+        "shortHash": "c046a13",
+        "hash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+        "subject": "fix: remove duplicate jira-update job from ci.yml",
+        "body": "fix: remove duplicate jira-update job from ci.yml\n",
+        "author": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782921086000
+        },
+        "committer": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1782921086000
+        },
+        "branch": "main"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "commitHash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/28538939660"
+          },
+          "gitCommit": {
+            "shortHash": "c046a13",
+            "hash": "c046a13d9998beb92458a20ca1e1f1d46b3ff7bd",
+            "subject": "fix: remove duplicate jira-update job from ci.yml",
+            "body": "fix: remove duplicate jira-update job from ci.yml\n",
+            "author": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782921086000
+            },
+            "committer": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1782921086000
+            },
+            "branch": "main"
+          },
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "AQA-2.spec.ts",
+      "file": "AQA-2.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AQA-2 – Happy Path",
+          "file": "AQA-2.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "PBE team user can log in successfully and receives login successful message",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 33,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.777Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-e53d81d94bdc1bde6bfa",
+              "file": "AQA-2.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "DPS team user can log in successfully and receives login successful message",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.847Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-4b30c2694b52c06310a7",
+              "file": "AQA-2.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "US_PERSON user login returns exportStatus field in response",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.882Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-9c93e16b6b681bfbd568",
+              "file": "AQA-2.spec.ts",
+              "line": 54,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-2 – Boundary Conditions",
+          "file": "AQA-2.spec.ts",
+          "line": 66,
+          "column": 6,
+          "specs": [
+            {
+              "title": "user with null team_name but US_PERSON status can still attempt login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.908Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-ae683ea5e06a7195e13a",
+              "file": "AQA-2.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "all users returned by getUsers have a defined export_status value",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.925Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-8272af52bf362f0a7a02",
+              "file": "AQA-2.spec.ts",
+              "line": 80,
+              "column": 7
+            },
+            {
+              "title": "team_name values for all users are restricted to PBE, DPS, or null",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.942Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-615aaaeda799f30bf7fd",
+              "file": "AQA-2.spec.ts",
+              "line": 88,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "AQA-2 – Negative Tests",
+          "file": "AQA-2.spec.ts",
+          "line": 97,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NON_US_PERSON user is blocked from logging in regardless of team",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.959Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-7c916c78be163ea54fd5",
+              "file": "AQA-2.spec.ts",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "NON_US_PERSON user from PBE team is blocked from logging in",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.979Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-62f733c77b70dd17227f",
+              "file": "AQA-2.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "login with invalid credentials returns unsuccessful response",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-01T18:26:24.996Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d221958e005739514deb-d181b2410d85b25c66d8",
+              "file": "AQA-2.spec.ts",
+              "line": 122,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-01T18:26:24.235Z",
+    "duration": 789.822,
+    "expected": 9,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
