@@ -108,9 +108,16 @@ export function saveManifest(items: JiraSuiteItem[]): void {
   fs.writeFileSync(SUITE_MANIFEST, JSON.stringify(items, null, 2), 'utf-8');
 }
 
-export function mergeIntoSuite(existing: JiraSuiteItem[], fresh: JiraSuiteItem[]): JiraSuiteItem[] {
+export function mergeIntoSuite(
+  existing:      JiraSuiteItem[],
+  fresh:         JiraSuiteItem[],
+  existingSpecs: Set<string> = new Set(),
+): JiraSuiteItem[] {
   const existingKeys = new Set(existing.map((i) => i.issueKey));
-  const newItems = fresh.filter((i) => !existingKeys.has(i.issueKey));
+  // Re-process stories that are in the manifest but whose spec file is missing
+  const newItems = fresh.filter((i) =>
+    !existingKeys.has(i.issueKey) || !existingSpecs.has(i.issueKey)
+  );
 
   if (newItems.length > 0) {
     console.log(`   Adding ${newItems.length} new story/stories to suite:`);
@@ -129,7 +136,7 @@ export function mergeIntoSuite(existing: JiraSuiteItem[], fresh: JiraSuiteItem[]
   return merged;
 }
 
-export async function pollOnce(): Promise<JiraSuiteItem[]> {
+export async function pollOnce(existingSpecs: Set<string> = new Set()): Promise<JiraSuiteItem[]> {
   console.log(`\nPolling Jira for "${STATUS}" stories in project ${PROJECT_KEY}...`);
   const fresh = await fetchReadyStories();
 
@@ -137,7 +144,7 @@ export async function pollOnce(): Promise<JiraSuiteItem[]> {
   console.log(`   Revalidating ${existing.length} existing suite entries...`);
   existing = await revalidateManifest(existing);
 
-  const updated = mergeIntoSuite(existing, fresh);
+  const updated = mergeIntoSuite(existing, fresh, existingSpecs);
   saveManifest(updated);
   console.log(`   Suite total: ${updated.length} story/stories`);
   return updated;
