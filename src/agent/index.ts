@@ -334,6 +334,8 @@ async function runInteractive(): Promise<void> {
 }
 
 // ── POLLING MODE ──────────────────────────────────────────────────────────────
+const processedThisSession = new Set<string>();
+
 async function runPolling(): Promise<void> {
   console.log('\n🔄  POLLING MODE');
   console.log(`    Interval : ${POLL_INTERVAL_MS / 1000}s`);
@@ -357,10 +359,16 @@ async function runPolling(): Promise<void> {
   // Continue polling for new stories — also check @regression on each tick
   const stop = startPollingLoop(
     async (updatedSuite) => {
-      const stories: StoryInput[] = updatedSuite.map((s) => ({
+      const newStories = updatedSuite.filter((s) => !processedThisSession.has(s.issueKey));
+      if (newStories.length === 0) {
+        console.log('   ✓  All stories already processed this session — skipping');
+        return;
+      }
+      const stories: StoryInput[] = newStories.map((s) => ({
         issueKey:              s.issueKey,
         plainEnglishTestCases: [],
       }));
+      newStories.forEach((s) => processedThisSession.add(s.issueKey));
       await runPipeline(stories);
     },
   );
