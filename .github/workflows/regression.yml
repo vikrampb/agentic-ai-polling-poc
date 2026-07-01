@@ -114,6 +114,7 @@ jobs:
             echo "<html><body><h1>Regression Run #${NEXT}</h1><p>${{ job.status }}</p></body></html>" > regression-history/${FILENAME}
           fi
           ls -t regression-history/regression-*.html 2>/dev/null | tail -n +11 | xargs rm -f || true
+          python3 scripts/build_regression_index.py
           git add regression-history/
           git diff --cached --quiet || git commit -m "ci: regression run #${NEXT} [skip ci]"
           git push origin agent/auto-tests
