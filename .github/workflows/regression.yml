@@ -47,9 +47,9 @@ jobs:
           JIRA_EMAIL:        ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN:    ${{ secrets.JIRA_API_TOKEN }}
           JIRA_PROJECT_KEY:  AQA
-          GITHUB_TOKEN:      ${{ secrets.GITHUB_PAT }}
-          GITHUB_OWNER:      ${{ secrets.GITHUB_OWNER }}
-          GITHUB_REPO:       ${{ secrets.GITHUB_REPO }}
+          GITHUB_TOKEN:      ${{ secrets.GH_PAT }}
+          GITHUB_OWNER:      ${{ secrets.GH_OWNER }}
+          GITHUB_REPO:       ${{ secrets.GH_REPO }}
           GITHUB_BRANCH:     agent/auto-tests
 
       - name: Overlay freshly synced test files from agent branch
