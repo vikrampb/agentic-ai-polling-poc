@@ -1,0 +1,112 @@
+name: Jira Poller
+
+on:
+  # ── Configurable schedule ──────────────────────────────────────────────────
+  # Uncomment ONE of the following:
+  #
+  # schedule:
+  #   - cron: '*/30 * * * *'   # Every 30 minutes (demo)
+  #   - cron: '0 * * * *'      # Every hour
+  #   - cron: '0 9-17 * * 1-5' # Every hour during business hours Mon-Fri
+
+  # On-demand trigger
+  workflow_dispatch:
+    inputs:
+      triggered_by:
+        description: 'What triggered this run'
+        required: false
+        default: 'manual'
+
+permissions:
+  contents: write
+  actions:  write
+
+jobs:
+  poll:
+    name: Poll Jira for In Review Stories
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check for In Review stories
+        id: check
+        env:
+          JIRA_HOST:      ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL:     ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          KEYS=$(python3 -c "
+          import urllib.request, json, os, base64
+          host  = os.environ['JIRA_HOST']
+          email = os.environ['JIRA_EMAIL']
+          token = os.environ['JIRA_API_TOKEN']
+          auth  = base64.b64encode(f'{email}:{token}'.encode()).decode()
+          jql   = 'project = \"AQA\" AND status = \"In Review\" AND issuetype = Story'
+          url   = f'https://{host}/rest/api/3/search/jql?jql={urllib.parse.quote(jql)}&fields=summary&maxResults=50'
+          import urllib.parse
+          req = urllib.request.Request(url, headers={'Authorization': f'Basic {auth}', 'Accept': 'application/json'})
+          with urllib.request.urlopen(req) as r:
+              data = json.load(r)
+          keys = [i['key'] for i in data.get('issues', [])]
+          print(','.join(keys))
+          ")
+          echo "keys=$KEYS" >> $GITHUB_OUTPUT
+          if [ -z "$KEYS" ]; then
+            echo "No In Review stories found"
+          else
+            echo "Found: $KEYS"
+          fi
+
+      - name: Generate tests for In Review stories
+        if: steps.check.outputs.keys != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JIRA_HOST:         ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL:        ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN:    ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY:  AQA
+          JIRA_READY_STATUS: In Review
+          GITHUB_TOKEN:      ${{ secrets.GH_PAT }}
+          GITHUB_OWNER:      ${{ secrets.GH_OWNER }}
+          GITHUB_REPO:       ${{ secrets.GH_REPO }}
+          GITHUB_BRANCH:     agent/auto-tests
+          RUN_MODE:          poll
+          MAX_SUITE_SIZE:    "0"
+        run: |
+          # Run a single poll cycle (not the continuous loop)
+          node -e "
+          process.env.RUN_MODE = 'poll';
+          const { pollOnce } = require('./src/agent/jiraPoller');
+          pollOnce().then(suite => {
+            console.log('Suite size:', suite.length);
+            process.exit(0);
+          }).catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
+          " || npx ts-node --compiler-options '{"module":"commonjs"}' -e "
+          import { pollOnce } from './src/agent/jiraPoller';
+          pollOnce().then(s => { console.log('Done:', s.length); }).catch(console.error);
+          "
+
+      - name: Trigger CI pipeline
+        if: steps.check.outputs.keys != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh workflow run ci.yml --repo ${{ secrets.GH_OWNER }}/${{ secrets.GH_REPO }} --ref main
+          echo "CI pipeline triggered for: ${{ steps.check.outputs.keys }}"
