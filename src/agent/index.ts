@@ -158,6 +158,25 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
   const existingFiles  = await listGeneratedTests();
   for (const file of existingFiles) {
     if (file.name.endsWith('.spec.ts') && !currentKeys.has(file.name)) {
+      // Never delete spec files that have @regression tags — they belong
+      // to the permanent regression suite regardless of current poll run
+      const { Octokit } = require('octokit');
+      const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+      try {
+        const { data } = await octokit.rest.repos.getContent({
+          owner: process.env.GITHUB_OWNER!,
+          repo:  process.env.GITHUB_REPO!,
+          path:  file.path,
+          ref:   process.env.GITHUB_BRANCH ?? 'agent/auto-tests',
+        });
+        if (!Array.isArray(data) && 'content' in data) {
+          const fileContent = Buffer.from((data as any).content, 'base64').toString('utf-8');
+          if (fileContent.includes('@regression')) {
+            console.log(`   🔖  Keeping ${file.name} — has @regression tags`);
+            continue;
+          }
+        }
+      } catch { /* can't read file — delete it */ }
       await deleteFile(file.path);
     }
   }
