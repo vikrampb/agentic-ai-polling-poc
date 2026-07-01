@@ -49,8 +49,12 @@ jobs:
 
       - name: Overlay test files from agent branch
         run: |
-          git fetch origin agent/auto-tests
+          git fetch origin agent/auto-tests --force
           git checkout origin/agent/auto-tests -- tests/ playwright.config.ts || true
+          echo "AQA-1 @regression count: $(grep -c '@regression' tests/generated/AQA-1.spec.ts 2>/dev/null || echo 0)"
+          echo "AQA-2 @regression count: $(grep -c '@regression' tests/generated/AQA-2.spec.ts 2>/dev/null || echo 0)"
+          echo "Files with @regression:"
+          grep -rl "@regression" tests/generated/ 2>/dev/null || echo "none" 
 
       - name: Check for regression tests
         id: check
