@@ -148,7 +148,7 @@ AVAILABLE ENDPOINTS — only these two exist, do not invent others:
 Exact assertions to use:
   US_PERSON success       : expect(response.message).toContain("Login successful")
   NON_US_PERSON block     : expect(response.message).toContain("Only US Persons are allowed to watch this demo.")
-  Invalid credentials     : expect(response.message).toContain("Invalid username or password.")
+  Invalid credentials: "Invalid UserID/Password combination. Please verify."
   Missing credentials     : expect(response.success).toBe(false)
 
 CRITICAL — US_PERSON and NON_US_PERSON are STRING VALUES not variables:
