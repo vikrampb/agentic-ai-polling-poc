@@ -53,7 +53,7 @@ app.get('/api/login', (req: Request, res: Response) => {
     .get(username, password) as User | undefined;
 
   if (!user)
-    return res.status(200).json({ success: false, message: 'Invalid username or password.' });
+    return res.status(200).json({ success: false, message: 'Invalid UserID/Password combination. Please verify.' });
 
   if (user.export_status === 'NON_US_PERSON')
     return res.status(200).json({
