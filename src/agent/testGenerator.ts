@@ -134,8 +134,10 @@ AVAILABLE ENDPOINTS — only these two exist, do not invent others:
     No other fields exist — do not assert redirect_url, home_page, team, or teamPage
 
 Exact assertions to use:
-  US_PERSON success  : expect(response.message).toContain("Login successful")
-  NON_US_PERSON block: expect(response.message).toContain("Only US Persons are allowed to watch this demo.")
+  US_PERSON success       : expect(response.message).toContain("Login successful")
+  NON_US_PERSON block     : expect(response.message).toContain("Only US Persons are allowed to watch this demo.")
+  Invalid credentials     : expect(response.message).toContain("Invalid username or password.")
+  Missing credentials     : expect(response.success).toBe(false)
 
 CRITICAL — US_PERSON and NON_US_PERSON are STRING VALUES not variables:
   CORRECT: user.export_status === 'US_PERSON'
