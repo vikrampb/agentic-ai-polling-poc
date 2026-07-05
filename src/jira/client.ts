@@ -59,9 +59,23 @@ export async function fetchIssue(issueKey: string): Promise<JiraIssue> {
     };
   };
 
-  const description = adfToText(data.fields.description);
+  const fullDescription = adfToText(data.fields.description);
+
+  // Try dedicated AC custom field first
   const acField = data.fields.customfield_10016;
-  const acceptanceCriteria = acField ? adfToText(acField) : '';
+  let acceptanceCriteria = acField ? adfToText(acField) : '';
+
+  // If no dedicated AC field, extract "Acceptance Criteria:" section from description
+  if (!acceptanceCriteria) {
+    const acMatch = fullDescription.match(/[Aa]cceptance [Cc]riteria[:\s]+(.+)/s);
+    if (acMatch) {
+      acceptanceCriteria = acMatch[1].trim();
+    }
+  }
+
+  // Description is everything before "Acceptance Criteria:" if present
+  const acSplit = fullDescription.match(/^(.+?)[Aa]cceptance [Cc]riteria/s);
+  const description = acSplit ? acSplit[1].trim() : fullDescription;
 
   return {
     key: data.key,

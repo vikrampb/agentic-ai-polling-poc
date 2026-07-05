@@ -105,14 +105,39 @@ export function hasRegressionTests(testCode: string): boolean {
   return testCode.includes('@regression');
 }
 
-// ── Parse numbered AC points (1. or 1) format) ────────────────────────────────
+// ── Parse AC points — handles numbered lists AND prose sentences ─────────────
 function parseAcPoints(ac: string): string[] {
-  return ac
+  if (!ac || !ac.trim()) return [];
+
+  // Strategy 1: numbered lines (1. or 1) format)
+  const numbered = ac
     .split('\n')
     .map((l) => l.trim())
-    .filter((l) => /^\d+[.)]\s+\S/.test(l))
-    .map((l) => l.replace(/^\d+[.)]\s+/, '').trim())
-    .filter((l) => l.length > 10); // ignore very short lines
+    .filter((l) => /^\d+[.)\s]/.test(l))
+    .map((l) => l.replace(/^\d+[.)\s]+/, '').trim())
+    .filter((l) => l.length > 10);
+
+  if (numbered.length > 0) return numbered;
+
+  // Strategy 2: extract "Acceptance Criteria:" section from prose
+  const acMatch = ac.match(/[Aa]cceptance [Cc]riteria[:\s]+(.+?)(?:$)/s);
+  const acSection = acMatch ? acMatch[1].trim() : ac.trim();
+
+  // Strategy 3: split prose on "If " conditions
+  const ifStatements = acSection
+    .split(/(?=\bIf\b)/g)
+    .map((s) => s.trim())
+    .filter((s) => s.toLowerCase().startsWith('if') && s.length > 20);
+
+  if (ifStatements.length > 0) return ifStatements;
+
+  // Strategy 4: split on sentence boundaries
+  const sentences = acSection
+    .split(/\.\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 20);
+
+  return sentences;
 }
 
 // ── Categorise AC point ───────────────────────────────────────────────────────
