@@ -1,13 +1,18 @@
 /**
  * src/agent/testGenerator.ts
- * Generates Playwright TypeScript tests from a Jira story.
  *
- * AC MODE (when AC has numbered points):
- *   Parses each AC point in TypeScript, calls Claude once per point
- *   to write the test body. Guarantees exactly N tests for N AC points.
+ * AC MODE  (story has numbered AC points):
+ *   - Parse AC points in TypeScript — we control the count
+ *   - Call Claude once per AC point to get ONLY assertion lines
+ *   - Wrap each in exactly one test() block ourselves
+ *   - Result: exactly N tests for N AC points
  *
  * DESCRIPTION MODE (no AC or no numbered points):
- *   Claude generates happy path + boundary + negative tests from description.
+ *   - Call Claude once to generate 3 describe blocks
+ *   - 2-3 tests per block inferred from description
+ *
+ * INTERACTIVE MODE (plain-English test cases provided):
+ *   - One test per case, Claude writes the body
  */
 import Anthropic from '@anthropic-ai/sdk';
 import { JiraIssue } from '../jira/client';
@@ -22,7 +27,7 @@ export interface PlainEnglishTestCase {
   expectedOutcome: string;
 }
 
-// ── Fixed file header ─────────────────────────────────────────────────────────
+// ── Fixed file header — always prepended ──────────────────────────────────────
 const FILE_HEADER = `import { test, expect, APIRequestContext } from '@playwright/test';
 
 interface User {
@@ -56,282 +61,244 @@ async function login(
 }
 `;
 
-// ── Detect @regression from Jira label or AC/description keywords ─────────────
+// ── Shared context injected into every Claude prompt ──────────────────────────
+const CONTEXT = `
+HELPERS (already defined — do NOT redeclare):
+  getUsers(request) → User[]
+    User fields: id, name, export_status, username, password, team_name
+    export_status is ALWAYS the string "US_PERSON" or "NON_US_PERSON" — never a variable
+  login(request, username, password) → LoginResponse
+    LoginResponse fields: success (boolean), message (string), exportStatus? (string)
+    NO OTHER FIELDS EXIST — do not assert redirect_url, home_page, team, teamPage etc.
+
+EXACT server messages — copy verbatim into assertions:
+  US_PERSON success  : "Login successful. Welcome!"
+  NON_US_PERSON block: "Only US Persons are allowed to watch this demo."
+  Wrong credentials  : "Invalid UserID/Password combination. Please verify."
+  Missing credentials: "Missing credentials."
+
+RULES:
+  - Never hardcode usernames or passwords — always get them from getUsers()
+  - Use 'wrongPassword123!' when testing incorrect passwords
+  - export_status comparisons: user.export_status === 'US_PERSON' (string, not variable)
+`.trim();
+
+// ── Detect @regression ────────────────────────────────────────────────────────
 function detectRegression(issue: JiraIssue): boolean {
-  const labelMatch = issue.labels.some((l) => l.toLowerCase() === 'regression');
-  if (labelMatch) {
-    console.log(`         🏷️   Jira label "Regression" detected — tagging tests`);
+  if (issue.labels.some((l) => l.toLowerCase() === 'regression')) {
+    console.log(`         🏷️   Jira "Regression" label — tagging tests`);
     return true;
   }
   const text = (issue.acceptanceCriteria || issue.description || '').toLowerCase();
-  const textMatch =
-    text.includes('regression') ||
-    text.includes('existing functionality') ||
-    text.includes('backward compatibility') ||
-    text.includes('must not break') ||
-    text.includes('should not break') ||
-    text.includes('@regression');
-  if (textMatch) {
+  if (
+    text.includes('regression') || text.includes('existing functionality') ||
+    text.includes('backward compatibility') || text.includes('must not break') ||
+    text.includes('@regression')
+  ) {
     console.log(`         🏷️   Regression keyword in AC/description — tagging tests`);
     return true;
   }
   return false;
 }
 
-// ── Detect @regression tags in generated code ─────────────────────────────────
 export function hasRegressionTests(testCode: string): boolean {
   return testCode.includes('@regression');
 }
 
-// ── Parse numbered AC points from AC text ─────────────────────────────────────
+// ── Parse numbered AC points (1. or 1) format) ────────────────────────────────
 function parseAcPoints(ac: string): string[] {
   return ac
     .split('\n')
     .map((l) => l.trim())
-    .filter((l) => /^\d+[.)]\s/.test(l))
+    .filter((l) => /^\d+[.)]\s+\S/.test(l))
     .map((l) => l.replace(/^\d+[.)]\s+/, '').trim())
-    .filter((l) => l.length > 0);
+    .filter((l) => l.length > 10); // ignore very short lines
 }
 
-// ── Clean Claude output ───────────────────────────────────────────────────────
-function cleanOutput(text: string): string {
-  return text
-    .replace(/^```(?:typescript|ts|javascript|js)?\n?/gi, '')
-    .replace(/\n?```\s*$/gi, '')
-    .replace(/^(?:typescript|javascript|ts|js)\n/i, '')
-    .replace(/^import .*$/gm, '')
-    .replace(/^interface (User|LoginResponse)\s*\{[\s\S]*?\n\}\n?/gm, '')
-    .replace(/^async function (getUsers|login)\([\s\S]*?\n\}\n?/gm, '')
-    .trim();
-}
-
-// ── Extract only the inner body from Claude output (strips test() wrappers) ───
-function extractBodyOnly(text: string): string {
-  const cleaned = cleanOutput(text);
-  // If Claude returned complete test() blocks, extract just the inner body
-  const testMatch = cleaned.match(/test\s*\([^,]+,\s*(?:\{[^}]*\},\s*)?async\s*\(\s*\{\s*request\s*\}\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\);?/);
-  if (testMatch) {
-    return testMatch[1].trim();
-  }
-  // If Claude returned a describe block, extract tests inside and take first body
-  const describeMatch = cleaned.match(/test\.describe[\s\S]*?async\s*\(\s*\{\s*request\s*\}\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\);?/);
-  if (describeMatch) {
-    return describeMatch[1].trim();
-  }
-  return cleaned;
-}
-
-// ── Shared context for Claude ─────────────────────────────────────────────────
-const SHARED_CONTEXT = `ALREADY DEFINED — do NOT redeclare:
-  getUsers(request): Promise<User[]>   — User has: id, name, export_status, username, password, team_name
-  login(request, username, password): Promise<LoginResponse>
-
-AVAILABLE ENDPOINTS — only these two exist:
-  GET /api/users  → { users: Array<{ id, name, export_status, username, password, team_name }> }
-  GET /api/login?username=u&password=p → { success: boolean, message: string, exportStatus?: string }
-
-Exact server messages — use these verbatim:
-  US_PERSON success  : "Login successful. Welcome!"
-  NON_US_PERSON block: "Only US Persons are allowed to watch this demo."
-  Invalid credentials: "Invalid UserID/Password combination. Please verify."
-  Missing credentials : "Missing credentials."
-
-CRITICAL rules:
-- "US_PERSON" and "NON_US_PERSON" are string values, not variables
-  CORRECT: user.export_status === 'US_PERSON'
-  WRONG:   user.export_status === US_PERSON
-- Only assert: success, message, exportStatus — no other response fields exist
-- Never hardcode credentials — use password from getUsers()
-- Call getUsers/login directly, never redeclare them`;
-
-// ── Generate body for ONE AC point ────────────────────────────────────────────
-async function generateBodyForAcPoint(
-  acPoint:     string,
-  issueKey:    string,
-  isRegression: boolean,
-): Promise<string> {
-  const tagHint = isRegression
-    ? `This test uses: test('name', { tag: ['@regression'] }, async ({ request }) => {`
-    : '';
-
-  const prompt = `You are a QA engineer writing a single Playwright test body.
-Output ONLY the TypeScript statements inside async ({ request }) => { }.
-No imports. No function declarations. No markdown. No describe blocks.
-
-${SHARED_CONTEXT}
-
-${tagHint}
-
-Write ONE test that validates this acceptance criterion:
-"${acPoint}"
-
-Write only the body statements.`.trim();
-
-  const response = await client.messages.create({
-    model:      'claude-sonnet-4-6',
-    max_tokens: 600,
-    messages:   [{ role: 'user', content: prompt }],
-  });
-
-  return extractBodyOnly(
-    response.content
-      .filter((b) => b.type === 'text')
-      .map((b) => (b as { type: 'text'; text: string }).text)
-      .join('')
-  );
-}
-
-// ── Categorise an AC point into happy/boundary/negative ───────────────────────
-function categorise(acPoint: string): 'happy' | 'boundary' | 'negative' {
-  const lower = acPoint.toLowerCase();
+// ── Categorise AC point ───────────────────────────────────────────────────────
+function categorise(point: string): 'happy' | 'boundary' | 'negative' {
+  const lower = point.toLowerCase();
   if (
-    lower.includes('not allow') || lower.includes('denied') || lower.includes('block') ||
+    lower.includes('not allow') || lower.includes('block') || lower.includes('denied') ||
     lower.includes('error') || lower.includes('invalid') || lower.includes('incorrect') ||
-    lower.includes('cannot') || lower.includes('rejected') || lower.includes('fail')
+    lower.includes('cannot') || lower.includes('rejected') || lower.includes('fail') ||
+    lower.includes('not allow') || lower.includes('is not allowed')
   ) return 'negative';
   if (
-    lower.includes('edge') || lower.includes('boundary') || lower.includes('all users') ||
-    lower.includes('every') || lower.includes('any user') || lower.includes('regardless')
+    lower.includes('all users') || lower.includes('every user') || lower.includes('regardless') ||
+    lower.includes('boundary') || lower.includes('edge') || lower.includes('any user')
   ) return 'boundary';
   return 'happy';
 }
 
-// ── AC MODE: one test per AC point — Claude writes assertions only ──────────
+// ── Strip markdown and helper redeclarations ──────────────────────────────────
+function clean(raw: string): string {
+  return raw
+    .replace(/^```(?:typescript|ts|javascript|js)?\n?/gim, '')
+    .replace(/\n?```\s*$/gim, '')
+    .replace(/^(?:typescript|javascript)\n/im, '')
+    .replace(/^import\s+.*$/gm, '')
+    .replace(/^interface\s+(User|LoginResponse)\s*\{[\s\S]*?\n\}\n?/gm, '')
+    .replace(/^async\s+function\s+(getUsers|login)\s*\([\s\S]*?\n\}\n?/gm, '')
+    .replace(/^\s*\/\/.*$/gm, '') // strip comment-only lines
+    .trim();
+}
+
+// ── Extract only assertion lines from Claude output ───────────────────────────
+// Claude sometimes returns complete test() or describe() blocks even when asked
+// for just assertions. This extracts the inner body of the first test() found,
+// or returns the raw output if no test() wrapper is present.
+function extractAssertions(raw: string): string {
+  const cleaned = clean(raw);
+
+  // If it looks like plain assertion lines (no test( at start), return as-is
+  if (!cleaned.includes('test(') && !cleaned.includes('test.describe(')) {
+    return cleaned;
+  }
+
+  // Extract body of first test() block
+  const match = cleaned.match(/test\s*\([^)]*\)\s*,?\s*async\s*\(\s*\{\s*request\s*\}\s*\)\s*=>\s*\{([\s\S]*?)\n  \}/);
+  if (match) {
+    return match[1].replace(/^\n/, '').replace(/\n$/, '').trim();
+  }
+
+  // Fallback: strip test() and describe() wrapper lines and return the rest
+  return cleaned
+    .split('\n')
+    .filter((l) => !l.trim().startsWith('test(') && !l.trim().startsWith('test.describe(') && l.trim() !== '});' && l.trim() !== '});')
+    .join('\n')
+    .trim();
+}
+
+// ── Call Claude for assertions for one AC point ───────────────────────────────
+async function assertionsForAcPoint(point: string): Promise<string> {
+  const prompt = `You are a QA engineer. Write ONLY the assertion statements for this single acceptance criterion.
+
+${CONTEXT}
+
+Acceptance criterion: "${point}"
+
+Output ONLY raw TypeScript statements — no test() wrapper, no describe(), no imports, no comments.
+Start with: const users = await getUsers(request);
+Then find the right user and call login().
+Write 3-5 lines maximum.`.trim();
+
+  const resp = await client.messages.create({
+    model:      'claude-sonnet-4-6',
+    max_tokens: 300,
+    messages:   [{ role: 'user', content: prompt }],
+  });
+
+  return extractAssertions(
+    resp.content
+      .filter((b) => b.type === 'text')
+      .map((b) => (b as any).text)
+      .join('')
+  );
+}
+
+// ── AC MODE ───────────────────────────────────────────────────────────────────
 async function generateFromAC(
   issue:        JiraIssue,
   acPoints:     string[],
   isRegression: boolean,
 ): Promise<string> {
-  console.log(`         📋  AC mode — generating exactly ${acPoints.length} test(s), one per AC point`);
+  console.log(`         📋  AC mode — ${acPoints.length} AC point(s) → ${acPoints.length} test(s)`);
 
-  const tagSuffix = isRegression ? `, { tag: ['@regression'] }` : '';
-  const happy: string[] = [];
+  const tag = isRegression ? `, { tag: ['@regression'] }` : '';
+  const happy:    string[] = [];
   const boundary: string[] = [];
   const negative: string[] = [];
 
   for (let i = 0; i < acPoints.length; i++) {
     const point = acPoints[i];
-    console.log(`         🤖  AC ${i + 1}/${acPoints.length}: "${point.slice(0, 70)}"`);
+    console.log(`         🤖  [${i + 1}/${acPoints.length}] ${point.slice(0, 70)}`);
 
-    const assertionPrompt = `You are a QA engineer. Given this acceptance criterion, write ONLY the assertion statements.
-Output ONLY 3-6 lines of TypeScript. No test() wrapper. No describe(). No imports. No comments.
+    const assertions = await assertionsForAcPoint(point);
+    const name = point.length > 100 ? point.slice(0, 97) + '…' : point;
+    const indented = assertions.split('\n').map((l) => '    ' + l).join('\n');
 
-Available helpers (already defined, do not redeclare):
-  getUsers(request) → users with: export_status, username, password, team_name
-  login(request, username, password) → { success: boolean, message: string }
-
-Server messages (verbatim):
-  US_PERSON OK     : "Login successful. Welcome!"
-  NON_US_PERSON    : "Only US Persons are allowed to watch this demo."
-  Wrong credentials: "Invalid UserID/Password combination. Please verify."
-  Missing creds    : "Missing credentials."
-
-AC: "${point}"
-
-Write minimal statements to verify this. Start with:
-  const users = await getUsers(request);
-Then find relevant user and call login(). Use 'wrongPassword123!' for wrong password tests.`.trim();
-
-    const response = await client.messages.create({
-      model:      'claude-sonnet-4-6',
-      max_tokens: 400,
-      messages:   [{ role: 'user', content: assertionPrompt }],
-    });
-
-    const assertions = cleanOutput(
-      response.content
-        .filter((b) => b.type === 'text')
-        .map((b) => (b as { type: 'text'; text: string }).text)
-        .join('')
-    );
-
-    const testName = point.length > 100 ? point.slice(0, 100) + '…' : point;
     const block = `
-  test('${testName}'${tagSuffix}, async ({ request }) => {
-${assertions.split('\n').map((l: string) => '    ' + l).join('\n')}
+  test('${name}'${tag}, async ({ request }) => {
+${indented}
   });`;
 
-    const cat = categorise(point);
-    if (cat === 'negative') negative.push(block);
-    else if (cat === 'boundary') boundary.push(block);
-    else happy.push(block);
+    switch (categorise(point)) {
+      case 'negative':  negative.push(block);  break;
+      case 'boundary':  boundary.push(block);  break;
+      default:          happy.push(block);      break;
+    }
   }
 
   const skip = `\n  test.skip('No AC points for this category', async () => {});`;
 
-  return FILE_HEADER + `
-test.describe('${issue.key} – Happy Path', () => {${happy.length ? happy.join('') : skip}
-});
-
-test.describe('${issue.key} – Boundary Conditions', () => {${boundary.length ? boundary.join('') : skip}
-});
-
-test.describe('${issue.key} – Negative Tests', () => {${negative.length ? negative.join('') : skip}
-});
-`;
+  return (
+    FILE_HEADER +
+    `\ntest.describe('${issue.key} \u2013 Happy Path', () => {${happy.length ? happy.join('') : skip}\n});\n` +
+    `\ntest.describe('${issue.key} \u2013 Boundary Conditions', () => {${boundary.length ? boundary.join('') : skip}\n});\n` +
+    `\ntest.describe('${issue.key} \u2013 Negative Tests', () => {${negative.length ? negative.join('') : skip}\n});\n`
+  );
 }
 
-// ── DESCRIPTION MODE: Claude infers all test cases ───────────────────────────
+// ── DESCRIPTION MODE ──────────────────────────────────────────────────────────
 async function generateFromDescription(
   issue:        JiraIssue,
   isRegression: boolean,
 ): Promise<string> {
   console.log(`         🤖  Description mode — inferring happy/boundary/negative tests`);
 
-  const tagInstruction = isRegression
-    ? `Tag EVERY test with { tag: ['@regression'] }: test('name', { tag: ['@regression'] }, async ({ request }) => {`
+  const tag = isRegression
+    ? `Tag every test: test('name', { tag: ['@regression'] }, async ({ request }) => {`
     : `Do NOT add any tag annotations.`;
 
   const prompt = `You are a QA engineer. Generate Playwright TypeScript tests for this story.
 Output ONLY test.describe blocks. No imports. No function declarations. No markdown.
 
-Story: ${issue.key} — ${issue.summary}
+Story: ${issue.key} \u2014 ${issue.summary}
 Description: ${issue.description}
 
-${SHARED_CONTEXT}
+${CONTEXT}
 
-${tagInstruction}
+${tag}
+Generate THREE describe blocks: Happy Path, Boundary Conditions, Negative Tests.
+2-3 tests per block. Plain business language for test names.
+Start with: test.describe('${issue.key} \u2013 Happy Path', () => {`.trim();
 
-Generate THREE describe blocks (Happy Path, Boundary Conditions, Negative Tests).
-2-3 tests per block. Use plain business language for test names.
-Start with: test.describe('${issue.key} – Happy Path', () => {`.trim();
-
-  const response = await client.messages.create({
+  const resp = await client.messages.create({
     model:      'claude-sonnet-4-6',
     max_tokens: 2500,
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  return FILE_HEADER + '\n' + cleanOutput(
-    response.content
+  return FILE_HEADER + '\n' + clean(
+    resp.content
       .filter((b) => b.type === 'text')
-      .map((b) => (b as { type: 'text'; text: string }).text)
+      .map((b) => (b as any).text)
       .join('')
   ) + '\n';
 }
 
-// ── Generate body for one plain-English test case (interactive mode) ──────────
+// ── INTERACTIVE MODE ──────────────────────────────────────────────────────────
 async function generateTestBody(tc: PlainEnglishTestCase): Promise<string> {
-  const prompt = `Write the body of one Playwright test. Output ONLY TypeScript statements.
-No imports. No function declarations. No markdown.
+  const prompt = `Write the body of one Playwright test. Output ONLY TypeScript statements inside async ({ request }) => {}.
+No test() wrapper. No describe(). No imports.
 
-${SHARED_CONTEXT}
+${CONTEXT}
 
-Test:
-  Description : ${tc.description}
-  Endpoint    : ${tc.endpoint}
-  Expected    : ${tc.expectedOutcome}`.trim();
+Test: ${tc.description}
+Endpoint: ${tc.endpoint}
+Expected: ${tc.expectedOutcome}`.trim();
 
-  const response = await client.messages.create({
+  const resp = await client.messages.create({
     model:      'claude-sonnet-4-6',
-    max_tokens: 600,
+    max_tokens: 400,
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  return cleanOutput(
-    response.content
+  return extractAssertions(
+    resp.content
       .filter((b) => b.type === 'text')
-      .map((b) => (b as { type: 'text'; text: string }).text)
+      .map((b) => (b as any).text)
       .join('')
   );
 }
@@ -343,29 +310,26 @@ export async function generatePlaywrightTests(
 ): Promise<string> {
   const isRegression = detectRegression(issue);
 
-  // Interactive mode — one test per plain-English case
+  // Interactive mode
   if (plainEnglishTestCases.length > 0) {
-    const tagSuffix = isRegression ? `, { tag: ['@regression'] }` : '';
-    const testBlocks: string[] = [];
+    const tag = isRegression ? `, { tag: ['@regression'] }` : '';
+    const blocks: string[] = [];
     for (const tc of plainEnglishTestCases) {
       console.log(`         🤖  Generating: "${tc.description}"`);
       const body = await generateTestBody(tc);
-      testBlocks.push(`
-  test('${tc.description}'${tagSuffix}, async ({ request }) => {
-${body.split('\n').map((l) => '    ' + l).join('\n')}
-  });`);
+      blocks.push(`\n  test('${tc.description}'${tag}, async ({ request }) => {\n${body.split('\n').map((l) => '    ' + l).join('\n')}\n  });`);
     }
-    return FILE_HEADER + `\ntest.describe('${issue.key} – ${issue.summary}', () => {${testBlocks.join('\n')}\n});\n`;
+    return FILE_HEADER + `\ntest.describe('${issue.key} \u2013 ${issue.summary}', () => {${blocks.join('')}\n});\n`;
   }
 
-  // AC mode — parse AC points and generate one test per point
-  const hasAC = !!(issue.acceptanceCriteria && issue.acceptanceCriteria.trim().length > 0);
+  // AC mode — parse numbered points
+  const hasAC = !!(issue.acceptanceCriteria?.trim());
   const acPoints = hasAC ? parseAcPoints(issue.acceptanceCriteria!) : [];
 
   if (acPoints.length > 0) {
     return generateFromAC(issue, acPoints, isRegression);
   }
 
-  // Description mode — no AC or unparseable AC
+  // Description mode
   return generateFromDescription(issue, isRegression);
 }
