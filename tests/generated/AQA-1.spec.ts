@@ -57,6 +57,6 @@ test.describe('AQA-1 – Negative Tests', () => {
     const anyUser = users[0];
     const response = await login(request, anyUser.username, 'wrongPassword123!');
     expect(response.success).toBe(false);
-    expect(response.message).toBe("Invalid UserID/Password combination. Please verify.");
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 });
