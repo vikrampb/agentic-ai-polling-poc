@@ -31,7 +31,7 @@ async function login(
 }
 
 test.describe('AQA-1 – Happy Path', () => {
-  test('US_PERSON user can log in successfully and receives a welcome message', { tag: ['@regression'] }, async ({ request }) => {
+  test('US_PERSON user can log in successfully and receives welcome message', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(user => user.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
@@ -42,7 +42,7 @@ test.describe('AQA-1 – Happy Path', () => {
     expect(response.message).toBe('Login successful. Welcome!');
   });
 
-  test('US_PERSON user login response includes correct exportStatus', { tag: ['@regression'] }, async ({ request }) => {
+  test('US_PERSON user login response contains correct export status', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(user => user.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
@@ -53,7 +53,7 @@ test.describe('AQA-1 – Happy Path', () => {
     expect(response.exportStatus).toBe('US_PERSON');
   });
 
-  test('All US_PERSON users in the system can log in successfully', { tag: ['@regression'] }, async ({ request }) => {
+  test('All US_PERSON users are able to log in successfully', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const usUsers = users.filter(user => user.export_status === 'US_PERSON');
     expect(usUsers.length).toBeGreaterThan(0);
@@ -67,7 +67,7 @@ test.describe('AQA-1 – Happy Path', () => {
 });
 
 test.describe('AQA-1 – Boundary Conditions', () => {
-  test('NON_US_PERSON user is blocked from logging in with correct credentials', { tag: ['@regression'] }, async ({ request }) => {
+  test('NON_US_PERSON user is blocked from logging in and receives correct error message', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(user => user.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
@@ -78,7 +78,7 @@ test.describe('AQA-1 – Boundary Conditions', () => {
     expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
   });
 
-  test('All NON_US_PERSON users in the system are blocked from logging in', { tag: ['@regression'] }, async ({ request }) => {
+  test('All NON_US_PERSON users are blocked from logging in', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUsers = users.filter(user => user.export_status === 'NON_US_PERSON');
     expect(nonUsUsers.length).toBeGreaterThan(0);
@@ -90,7 +90,7 @@ test.describe('AQA-1 – Boundary Conditions', () => {
     }
   });
 
-  test('Login attempt with missing credentials returns appropriate error', { tag: ['@regression'] }, async ({ request }) => {
+  test('Login attempt with missing credentials returns missing credentials message', { tag: ['@regression'] }, async ({ request }) => {
     const response = await login(request, '', '');
 
     expect(response.success).toBe(false);
@@ -99,36 +99,36 @@ test.describe('AQA-1 – Boundary Conditions', () => {
 });
 
 test.describe('AQA-1 – Negative Tests', () => {
-  test('US_PERSON user with an incorrect password is denied access', { tag: ['@regression'] }, async ({ request }) => {
+  test('US_PERSON user with incorrect password is denied login and receives invalid credentials message', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const usUser = users.find(user => user.export_status === 'US_PERSON');
     expect(usUser).toBeDefined();
 
-    const response = await login(request, usUser!.username, 'WrongPassword123!');
+    const response = await login(request, usUser!.username, 'incorrect_password_xyz');
 
     expect(response.success).toBe(false);
     expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 
-  test('NON_US_PERSON user with an incorrect password receives the US Person restriction error', { tag: ['@regression'] }, async ({ request }) => {
+  test('US_PERSON user with incorrect username is denied login and receives invalid credentials message', { tag: ['@regression'] }, async ({ request }) => {
+    const users = await getUsers(request);
+    const usUser = users.find(user => user.export_status === 'US_PERSON');
+    expect(usUser).toBeDefined();
+
+    const response = await login(request, 'invalid_username_xyz', usUser!.password);
+
+    expect(response.success).toBe(false);
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
+  });
+
+  test('NON_US_PERSON user with incorrect password is still blocked with the export status error rather than credentials error', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(user => user.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
 
-    const response = await login(request, nonUsUser!.username, 'WrongPassword123!');
+    const response = await login(request, nonUsUser!.username, 'incorrect_password_xyz');
 
     expect(response.success).toBe(false);
     expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
-  });
-
-  test('Login attempt with a valid password but unknown username is rejected', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const usUser = users.find(user => user.export_status === 'US_PERSON');
-    expect(usUser).toBeDefined();
-
-    const response = await login(request, 'unknownuser_that_does_not_exist', usUser!.password);
-
-    expect(response.success).toBe(false);
-    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 });
