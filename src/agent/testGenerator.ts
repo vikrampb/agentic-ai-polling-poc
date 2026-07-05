@@ -259,16 +259,16 @@ ${assertions.split('\n').map((l: string) => '    ' + l).join('\n')}
 
   const skip = `\n  test.skip('No AC points for this category', async () => {});`;
 
-  return FILE_HEADER + \`
-test.describe('\${issue.key} – Happy Path', () => {\${happy.length ? happy.join('') : skip}
+  return FILE_HEADER + `
+test.describe('${issue.key} – Happy Path', () => {${happy.length ? happy.join('') : skip}
 });
 
-test.describe('\${issue.key} – Boundary Conditions', () => {\${boundary.length ? boundary.join('') : skip}
+test.describe('${issue.key} – Boundary Conditions', () => {${boundary.length ? boundary.join('') : skip}
 });
 
-test.describe('\${issue.key} – Negative Tests', () => {\${negative.length ? negative.join('') : skip}
+test.describe('${issue.key} – Negative Tests', () => {${negative.length ? negative.join('') : skip}
 });
-\`;
+`;
 }
 
 // ── DESCRIPTION MODE: Claude infers all test cases ───────────────────────────
