@@ -196,7 +196,7 @@ function categorise(acPoint: string): 'happy' | 'boundary' | 'negative' {
   return 'happy';
 }
 
-// ── AC MODE: one test per AC point ────────────────────────────────────────────
+// ── AC MODE: one test per AC point — Claude writes assertions only ──────────
 async function generateFromAC(
   issue:        JiraIssue,
   acPoints:     string[],
@@ -211,13 +211,46 @@ async function generateFromAC(
 
   for (let i = 0; i < acPoints.length; i++) {
     const point = acPoints[i];
-    console.log(`         🤖  AC ${i + 1}/${acPoints.length}: "${point.slice(0, 60)}…"`);
-    const body = await generateBodyForAcPoint(point, issue.key, isRegression);
-    const testName = point.length > 80 ? point.slice(0, 80) + '…' : point;
+    console.log(`         🤖  AC ${i + 1}/${acPoints.length}: "${point.slice(0, 70)}"`);
+
+    const assertionPrompt = `You are a QA engineer. Given this acceptance criterion, write ONLY the assertion statements.
+Output ONLY 3-6 lines of TypeScript. No test() wrapper. No describe(). No imports. No comments.
+
+Available helpers (already defined, do not redeclare):
+  getUsers(request) → users with: export_status, username, password, team_name
+  login(request, username, password) → { success: boolean, message: string }
+
+Server messages (verbatim):
+  US_PERSON OK     : "Login successful. Welcome!"
+  NON_US_PERSON    : "Only US Persons are allowed to watch this demo."
+  Wrong credentials: "Invalid UserID/Password combination. Please verify."
+  Missing creds    : "Missing credentials."
+
+AC: "${point}"
+
+Write minimal statements to verify this. Start with:
+  const users = await getUsers(request);
+Then find relevant user and call login(). Use 'wrongPassword123!' for wrong password tests.`.trim();
+
+    const response = await client.messages.create({
+      model:      'claude-sonnet-4-6',
+      max_tokens: 400,
+      messages:   [{ role: 'user', content: assertionPrompt }],
+    });
+
+    const assertions = cleanOutput(
+      response.content
+        .filter((b) => b.type === 'text')
+        .map((b) => (b as { type: 'text'; text: string }).text)
+        .join('')
+    );
+
+    const testName = point.length > 100 ? point.slice(0, 100) + '…' : point;
     const block = `
   test('${testName}'${tagSuffix}, async ({ request }) => {
-${body.split('\n').map((l) => '    ' + l).join('\n')}
+${assertions.split('\n').map((l: string) => '    ' + l).join('\n')}
   });`;
+
     const cat = categorise(point);
     if (cat === 'negative') negative.push(block);
     else if (cat === 'boundary') boundary.push(block);
@@ -226,16 +259,16 @@ ${body.split('\n').map((l) => '    ' + l).join('\n')}
 
   const skip = `\n  test.skip('No AC points for this category', async () => {});`;
 
-  return FILE_HEADER + `
-test.describe('${issue.key} – Happy Path', () => {${happy.length ? happy.join('') : skip}
+  return FILE_HEADER + \`
+test.describe('\${issue.key} – Happy Path', () => {\${happy.length ? happy.join('') : skip}
 });
 
-test.describe('${issue.key} – Boundary Conditions', () => {${boundary.length ? boundary.join('') : skip}
+test.describe('\${issue.key} – Boundary Conditions', () => {\${boundary.length ? boundary.join('') : skip}
 });
 
-test.describe('${issue.key} – Negative Tests', () => {${negative.length ? negative.join('') : skip}
+test.describe('\${issue.key} – Negative Tests', () => {\${negative.length ? negative.join('') : skip}
 });
-`;
+\`;
 }
 
 // ── DESCRIPTION MODE: Claude infers all test cases ───────────────────────────
