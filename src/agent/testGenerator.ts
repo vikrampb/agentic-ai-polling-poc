@@ -95,12 +95,30 @@ async function generateAutoTests(issue: JiraIssue, isRegression: boolean): Promi
   test('name', { tag: ['@regression'] }, async ({ request }) => {`
     : `- Do NOT add any tag annotations.`;
 
+  const hasAC = !!(issue.acceptanceCriteria && issue.acceptanceCriteria.trim().length > 0);
+
+  const testStrategy = hasAC
+    ? `ACCEPTANCE CRITERIA IS PRESENT — generate tests ONLY for scenarios in the AC.
+- Each numbered AC point must map to at least one test case.
+- Do NOT invent scenarios beyond what the AC specifies.
+- Name each test in plain English mirroring the AC wording exactly.
+- Organise into THREE describe blocks using only AC points that fit each category.
+- If AC has no boundary or negative scenarios, add one test.skip() placeholder.`
+    : `NO ACCEPTANCE CRITERIA — generate tests from the description only.
+- Infer Happy Path, Boundary and Negative scenarios from the description.
+- Generate 2-3 tests per describe block covering the most likely scenarios.
+- Name each test in plain business language with no technical jargon.`;
+
+  const acSection = hasAC
+    ? 'Acceptance Criteria:\n' + issue.acceptanceCriteria
+    : '(No AC — infer test scenarios from the description above)';
+
   const prompt = `You are a QA engineer. Generate Playwright TypeScript tests for this story.
 Output ONLY test.describe blocks. No imports. No function declarations. No markdown.
 
 Story: ${issue.key} — ${issue.summary}
 Description: ${issue.description}
-AC: ${issue.acceptanceCriteria || '(see description)'}
+${acSection}
 
 ALREADY DEFINED — do NOT redeclare:
   getUsers(request): Promise<User[]>   — User has: id, name, export_status, username, password, team_name
@@ -111,7 +129,6 @@ AVAILABLE ENDPOINTS — only these two exist, do not invent others:
     Response: { users: Array<{ id, name, export_status, username, password, team_name }> }
     export_status values are the strings "US_PERSON" or "NON_US_PERSON" (not variables)
     team_name is "PBE", "DPS", or null
-
   GET /api/login?username=u&password=p
     Response: { success: boolean, message: string, exportStatus?: string }
     No other fields exist — do not assert redirect_url, home_page, team, or teamPage
@@ -127,9 +144,9 @@ CRITICAL — US_PERSON and NON_US_PERSON are STRING VALUES not variables:
 Rules:
 - Call getUsers/login directly. Never redeclare them.
 - Never hardcode credentials — use password from getUsers()
+- Only assert fields that exist: success, message, exportStatus
 ${tagInstruction}
-- Generate THREE describe blocks: Happy Path, Boundary Conditions, Negative Tests
-- 2-3 test() blocks each
+${testStrategy}
 - Start with: test.describe('${issue.key} – Happy Path', () => {`.trim();
 
   const response = await client.messages.create({
