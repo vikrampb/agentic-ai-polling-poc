@@ -105,6 +105,22 @@ function cleanOutput(text: string): string {
     .trim();
 }
 
+// ── Extract only the inner body from Claude output (strips test() wrappers) ───
+function extractBodyOnly(text: string): string {
+  const cleaned = cleanOutput(text);
+  // If Claude returned complete test() blocks, extract just the inner body
+  const testMatch = cleaned.match(/test\s*\([^,]+,\s*(?:\{[^}]*\},\s*)?async\s*\(\s*\{\s*request\s*\}\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\);?/);
+  if (testMatch) {
+    return testMatch[1].trim();
+  }
+  // If Claude returned a describe block, extract tests inside and take first body
+  const describeMatch = cleaned.match(/test\.describe[\s\S]*?async\s*\(\s*\{\s*request\s*\}\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\);?/);
+  if (describeMatch) {
+    return describeMatch[1].trim();
+  }
+  return cleaned;
+}
+
 // ── Shared context for Claude ─────────────────────────────────────────────────
 const SHARED_CONTEXT = `ALREADY DEFINED — do NOT redeclare:
   getUsers(request): Promise<User[]>   — User has: id, name, export_status, username, password, team_name
@@ -118,6 +134,7 @@ Exact server messages — use these verbatim:
   US_PERSON success  : "Login successful. Welcome!"
   NON_US_PERSON block: "Only US Persons are allowed to watch this demo."
   Invalid credentials: "Invalid UserID/Password combination. Please verify."
+  Missing credentials : "Missing credentials."
 
 CRITICAL rules:
 - "US_PERSON" and "NON_US_PERSON" are string values, not variables
@@ -156,7 +173,7 @@ Write only the body statements.`.trim();
     messages:   [{ role: 'user', content: prompt }],
   });
 
-  return cleanOutput(
+  return extractBodyOnly(
     response.content
       .filter((b) => b.type === 'text')
       .map((b) => (b as { type: 'text'; text: string }).text)
