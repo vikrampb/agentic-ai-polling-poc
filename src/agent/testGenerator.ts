@@ -97,29 +97,32 @@ async function generateAutoTests(issue: JiraIssue, isRegression: boolean): Promi
 
   const hasAC = !!(issue.acceptanceCriteria && issue.acceptanceCriteria.trim().length > 0);
 
-  const acPoints = hasAC
-    ? issue.acceptanceCriteria!.split('\n').filter((l: string) => l.trim().match(/^\d+\.|^-|^\*/)).length
-    : 0;
+  // Parse numbered AC points from the AC text
+  const acLines: string[] = hasAC
+    ? issue.acceptanceCriteria!.split('\n')
+        .map((l: string) => l.trim())
+        .filter((l: string) => /^\d+[.)\s]/.test(l))
+        .map((l: string) => l.replace(/^\d+[.)\s]+/, '').trim())
+        .filter((l: string) => l.length > 0)
+    : [];
 
-  const testStrategy = hasAC
-    ? `ACCEPTANCE CRITERIA MODE — STRICT RULES:
-- The AC has ${acPoints} point(s). Generate EXACTLY ${acPoints} test(s) total — one per AC point.
-- Do NOT generate more tests than there are AC points.
-- Do NOT invent any scenario not explicitly stated in the AC.
-- Read each AC point and write exactly one test that validates it.
-- Distribute the AC points across the THREE describe blocks based on their nature:
-    Happy Path    = AC points about successful outcomes
-    Boundary      = AC points about edge cases or limits
-    Negative Tests = AC points about failures or blocked access
-- If a describe block has no matching AC points, include exactly one:
-    test.skip('No AC points for this category', async () => {});
-- Name each test using the exact wording of its AC point.
-- Total test count must equal ${acPoints}.`
-    : `DESCRIPTION MODE — NO AC PROVIDED:
-- Infer test scenarios from the description only.
-- Generate 2-3 tests per describe block (Happy Path, Boundary, Negative).
-- Cover the most important scenarios a QA engineer would test.
-- Name tests in plain business language.`;
+  const testStrategy = hasAC && acLines.length > 0
+    ? `ACCEPTANCE CRITERIA MODE — CRITICAL RULES:
+- There are exactly ${acLines.length} AC point(s). Generate EXACTLY ${acLines.length} test(s). Not one more, not one fewer.
+- Each test corresponds to exactly ONE of these AC points:
+${acLines.map((l: string, i: number) => `  ${i + 1}. ${l}`).join('\n')}
+- Do NOT add extra tests. Do NOT combine AC points. One AC point = one test.
+- Name each test using the plain English wording of its AC point.
+- Categorise each test into the correct describe block:
+    Happy Path     = successful login or access scenarios
+    Boundary       = edge cases, all-users checks, status checks
+    Negative Tests = denied access, wrong credentials, blocked users
+- Empty describe blocks MUST contain exactly:
+    test.skip('No AC points for this category', async () => {});`
+    : `DESCRIPTION MODE — no AC provided:
+- Infer Happy Path, Boundary and Negative scenarios from the description.
+- Generate 2-3 tests per describe block.
+- Use plain business language for test names.`;
 
   const acSection = hasAC
     ? 'Acceptance Criteria:\n' + issue.acceptanceCriteria
