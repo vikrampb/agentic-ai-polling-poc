@@ -255,13 +255,12 @@ ${indented}
     }
   }
 
-  const skip = `\n  test.skip('No AC points for this category', async () => {});`;
+  // In AC mode, all tests go in one describe block — the AC defines the scope exactly
+  const allTests = [...happy, ...boundary, ...negative];
 
   return (
     FILE_HEADER +
-    `\ntest.describe('${issue.key} \u2013 Happy Path', () => {${happy.length ? happy.join('') : skip}\n});\n` +
-    `\ntest.describe('${issue.key} \u2013 Boundary Conditions', () => {${boundary.length ? boundary.join('') : skip}\n});\n` +
-    `\ntest.describe('${issue.key} \u2013 Negative Tests', () => {${negative.length ? negative.join('') : skip}\n});\n`
+    `\ntest.describe('${issue.key} \u2013 Acceptance Criteria Tests', () => {${allTests.join('')}\n});\n`
   );
 }
 
