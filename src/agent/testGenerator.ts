@@ -196,7 +196,24 @@ function extractAssertions(raw: string): string {
 }
 
 // ── Call Claude for assertions for one AC point ───────────────────────────────
-async function assertionsForAcPoint(point: string): Promise<string> {
+async function assertionsForAcPoint(point: string, retries = 3): Promise<string> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await assertionsForAcPointOnce(point);
+    } catch (err: any) {
+      if (attempt < retries && (err?.status === 529 || err?.status === 503 || err?.message?.includes('overloaded'))) {
+        const wait = attempt * 10000;
+        console.log(`         ⚠️   API overloaded — retrying in ${wait/1000}s (attempt ${attempt}/${retries})`);
+        await new Promise(r => setTimeout(r, wait));
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error('All retries exhausted');
+}
+
+async function assertionsForAcPointOnce(point: string): Promise<string> {
   const prompt = `You are a QA engineer. Write ONLY the assertion statements for this single acceptance criterion.
 
 ${CONTEXT}
