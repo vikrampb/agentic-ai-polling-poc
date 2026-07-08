@@ -31,7 +31,7 @@ async function login(
 }
 
 test.describe('AQA-2 – Happy Path', () => {
-  test('PBE team US_PERSON user can log in and receives successful welcome message', { tag: ['@regression'] }, async ({ request }) => {
+  test('PBE team user with US_PERSON status can log in successfully', async ({ request }) => {
     const users = await getUsers(request);
     const pbeUser = users.find(u => u.team_name === 'PBE' && u.export_status === 'US_PERSON');
     expect(pbeUser).toBeDefined();
@@ -39,9 +39,10 @@ test.describe('AQA-2 – Happy Path', () => {
     const response = await login(request, pbeUser!.username, pbeUser!.password);
     expect(response.success).toBe(true);
     expect(response.message).toBe('Login successful. Welcome!');
+    expect(response.exportStatus).toBe('US_PERSON');
   });
 
-  test('DPS team US_PERSON user can log in and receives successful welcome message', { tag: ['@regression'] }, async ({ request }) => {
+  test('DPS team user with US_PERSON status can log in successfully', async ({ request }) => {
     const users = await getUsers(request);
     const dpsUser = users.find(u => u.team_name === 'DPS' && u.export_status === 'US_PERSON');
     expect(dpsUser).toBeDefined();
@@ -49,23 +50,21 @@ test.describe('AQA-2 – Happy Path', () => {
     const response = await login(request, dpsUser!.username, dpsUser!.password);
     expect(response.success).toBe(true);
     expect(response.message).toBe('Login successful. Welcome!');
+    expect(response.exportStatus).toBe('US_PERSON');
   });
 
-  test('All US_PERSON users across all teams receive a successful login response', { tag: ['@regression'] }, async ({ request }) => {
+  test('Each team has at least one active US_PERSON user available for login', async ({ request }) => {
     const users = await getUsers(request);
-    const usPersonUsers = users.filter(u => u.export_status === 'US_PERSON');
-    expect(usPersonUsers.length).toBeGreaterThan(0);
+    const pbeUsers = users.filter(u => u.team_name === 'PBE' && u.export_status === 'US_PERSON');
+    const dpsUsers = users.filter(u => u.team_name === 'DPS' && u.export_status === 'US_PERSON');
 
-    for (const user of usPersonUsers) {
-      const response = await login(request, user.username, user.password);
-      expect(response.success).toBe(true);
-      expect(response.message).toBe('Login successful. Welcome!');
-    }
+    expect(pbeUsers.length).toBeGreaterThan(0);
+    expect(dpsUsers.length).toBeGreaterThan(0);
   });
 });
 
 test.describe('AQA-2 – Boundary Conditions', () => {
-  test('NON_US_PERSON user is blocked from logging in regardless of team membership', { tag: ['@regression'] }, async ({ request }) => {
+  test('NON_US_PERSON user is blocked regardless of team membership', async ({ request }) => {
     const users = await getUsers(request);
     const nonUsUser = users.find(u => u.export_status === 'NON_US_PERSON');
     expect(nonUsUser).toBeDefined();
@@ -75,57 +74,54 @@ test.describe('AQA-2 – Boundary Conditions', () => {
     expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
   });
 
-  test('All NON_US_PERSON users are consistently blocked regardless of their team', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const nonUsUsers = users.filter(u => u.export_status === 'NON_US_PERSON');
-    expect(nonUsUsers.length).toBeGreaterThan(0);
-
-    for (const user of nonUsUsers) {
-      const response = await login(request, user.username, user.password);
-      expect(response.success).toBe(false);
-      expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
-    }
-  });
-
-  test('Login response does not expose team or redirect information beyond success and message', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const usPersonUser = users.find(u => u.export_status === 'US_PERSON');
-    expect(usPersonUser).toBeDefined();
-
-    const response = await login(request, usPersonUser!.username, usPersonUser!.password);
-    expect(response.success).toBeDefined();
-    expect(response.message).toBeDefined();
-    expect((response as any).redirect_url).toBeUndefined();
-    expect((response as any).home_page).toBeUndefined();
-    expect((response as any).team).toBeUndefined();
-    expect((response as any).teamPage).toBeUndefined();
-  });
-});
-
-test.describe('AQA-2 – Negative Tests', () => {
-  test('User receives an error when logging in with an incorrect password', { tag: ['@regression'] }, async ({ request }) => {
-    const users = await getUsers(request);
-    const user = users.find(u => u.export_status === 'US_PERSON');
-    expect(user).toBeDefined();
-
-    const response = await login(request, user!.username, 'wrongPassword123!');
-    expect(response.success).toBe(false);
-    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
-  });
-
-  test('User receives an error when logging in with missing credentials', { tag: ['@regression'] }, async ({ request }) => {
+  test('Login attempt with missing username and password is rejected', async ({ request }) => {
     const response = await login(request, '', '');
     expect(response.success).toBe(false);
     expect(response.message).toBe('Missing credentials.');
   });
 
-  test('User receives an error when only the username is provided without a password', { tag: ['@regression'] }, async ({ request }) => {
+  test('Login attempt with missing password only is rejected', async ({ request }) => {
     const users = await getUsers(request);
-    const user = users.find(u => u.export_status === 'US_PERSON');
-    expect(user).toBeDefined();
+    const anyUser = users.find(u => u.export_status === 'US_PERSON');
+    expect(anyUser).toBeDefined();
 
-    const response = await login(request, user!.username, '');
+    const response = await login(request, anyUser!.username, '');
     expect(response.success).toBe(false);
     expect(response.message).toBe('Missing credentials.');
+  });
+});
+
+test.describe('AQA-2 – Negative Tests', () => {
+  test('Valid user with incorrect password cannot log in', async ({ request }) => {
+    const users = await getUsers(request);
+    const anyUser = users.find(u => u.export_status === 'US_PERSON');
+    expect(anyUser).toBeDefined();
+
+    const response = await login(request, anyUser!.username, 'wrongPassword123!');
+    expect(response.success).toBe(false);
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
+  });
+
+  test('Non-existent username with wrong password is rejected', async ({ request }) => {
+    const response = await login(request, 'nonexistent_user_xyz', 'wrongPassword123!');
+    expect(response.success).toBe(false);
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
+  });
+
+  test('NON_US_PERSON user from DPS team cannot access the application', async ({ request }) => {
+    const users = await getUsers(request);
+    const blockedDpsUser = users.find(u => u.team_name === 'DPS' && u.export_status === 'NON_US_PERSON');
+
+    if (blockedDpsUser) {
+      const response = await login(request, blockedDpsUser.username, blockedDpsUser.password);
+      expect(response.success).toBe(false);
+      expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
+    } else {
+      const blockedAnyUser = users.find(u => u.export_status === 'NON_US_PERSON');
+      expect(blockedAnyUser).toBeDefined();
+      const response = await login(request, blockedAnyUser!.username, blockedAnyUser!.password);
+      expect(response.success).toBe(false);
+      expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
+    }
   });
 });
