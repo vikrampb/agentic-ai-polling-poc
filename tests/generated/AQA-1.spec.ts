@@ -47,9 +47,9 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
   });
   test('If an invalid password is used, regardless of export_status, the user instead presented with an e…', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const user = users[0];
-    const response = await login(request, user.username, 'wrongPassword123!');
+    const anyUser = users[0];
+    const response = await login(request, anyUser.username, 'wrongPassword123!');
     expect(response.success).toBe(false);
-    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
+    expect(response.message).toBe("Invalid UserID/Password combination. Please verify.");
   });
 });
