@@ -71,6 +71,20 @@ jobs:
             echo "Found: $KEYS"
           fi
 
+      - name: Sync @regression tags with Jira labels
+        if: steps.check.outputs.keys != ''
+        run: npx ts-node --compiler-options '{"module":"commonjs"}' src/agent/retag.ts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JIRA_HOST:         ${{ secrets.JIRA_HOST }}
+          JIRA_EMAIL:        ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN:    ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY:  AQA
+          GITHUB_TOKEN:      ${{ secrets.GH_PAT }}
+          GITHUB_OWNER:      ${{ secrets.GH_OWNER }}
+          GITHUB_REPO:       ${{ secrets.GH_REPO }}
+          GITHUB_BRANCH:     agent/auto-tests
+
       - name: Generate tests for In Review stories
         if: steps.check.outputs.keys != ''
         env:
