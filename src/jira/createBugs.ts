@@ -40,11 +40,10 @@ export function parseFailedTests(resultsJsonPath: string): FailedTest[] {
   const results = JSON.parse(fs.readFileSync(resultsJsonPath, 'utf-8'));
   const failed: FailedTest[] = [];
 
-  for (const suite of results.suites ?? []) {
-    const file = suite.file ?? '';
-    // Extract story key from filename e.g. AQA-1.spec.ts → AQA-1
-    const storyKey = file.replace(/.*\//, '').replace('.spec.ts', '');
-
+  // Playwright JSON has nested suites: file suite → describe suite → specs
+  // Recursively walk all suites to find specs with failed tests
+  function walkSuite(suite: any, file: string, storyKey: string): void {
+    // Process specs at this level
     for (const spec of suite.specs ?? []) {
       for (const test of spec.tests ?? []) {
         for (const result of test.results ?? []) {
@@ -52,7 +51,7 @@ export function parseFailedTests(resultsJsonPath: string): FailedTest[] {
             const error = result.errors?.[0]?.message ?? 'Unknown error';
             failed.push({
               title:    spec.title,
-              error:    error.slice(0, 500), // truncate long errors
+              error:    error.slice(0, 500),
               file,
               storyKey,
             });
@@ -60,6 +59,16 @@ export function parseFailedTests(resultsJsonPath: string): FailedTest[] {
         }
       }
     }
+    // Recurse into nested suites
+    for (const nested of suite.suites ?? []) {
+      walkSuite(nested, file, storyKey);
+    }
+  }
+
+  for (const suite of results.suites ?? []) {
+    const file     = suite.file ?? suite.title ?? '';
+    const storyKey = file.replace(/.*\//, '').replace('.spec.ts', '');
+    walkSuite(suite, file, storyKey);
   }
 
   return failed;
