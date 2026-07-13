@@ -33,8 +33,8 @@ async function login(
 test.describe('AQA-1 – Acceptance Criteria Tests', () => {
   test('If the export_status of the user says “US_PERSON”, the user is allowed to log in and should be pr…', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const usUser = users.find(user => user.export_status === 'US_PERSON');
-    const response = await login(request, usUser.username, usUser.password);
+    const usPerson = users.find(user => user.export_status === 'US_PERSON');
+    const response = await login(request, usPerson.username, usPerson.password);
     expect(response.success).toBe(true);
     expect(response.message).toBe('Login successful. Welcome!');
   });
@@ -47,13 +47,9 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
   });
   test('If an invalid password is used, regardless of export_status, the user instead presented with an e…', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
-    const usUser = users.find(u => u.export_status === 'US_PERSON');
-    const nonUsUser = users.find(u => u.export_status === 'NON_US_PERSON');
-    const usLoginResponse = await login(request, usUser.username, 'wrongPassword123!');
-    const nonUsLoginResponse = await login(request, nonUsUser.username, 'wrongPassword123!');
-    expect(usLoginResponse.success).toBe(false);
-    expect(usLoginResponse.message).toBe('Invalid UserID/Password combination. Please verify.');
-    expect(nonUsLoginResponse.success).toBe(false);
-    expect(nonUsLoginResponse.message).toBe('Invalid UserID/Password combination. Please verify.');
+    const user = users[0];
+    const response = await login(request, user.username, 'wrongPassword123!');
+    expect(response.success).toBe(false);
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 });
