@@ -64,7 +64,7 @@ app.get('/api/login', (req: Request, res: Response) => {
 
   return res.status(200).json({
     success:      true,
-    message:      'Login successful. Welcome!',
+    message:      'Login successful. BROKEN!',
     exportStatus: user.export_status,
   });
 });
