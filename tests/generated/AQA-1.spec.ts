@@ -36,7 +36,7 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
     const usPerson = users.find(user => user.export_status === 'US_PERSON');
     const response = await login(request, usPerson.username, usPerson.password);
     expect(response.success).toBe(true);
-    expect(response.message).toBe('Login successful. Welcome!');
+    expect(response.message).toBe("Login successful. Welcome!");
   });
   test('If the export_status of the user says “NON_US_PERSON”, the user is not allowed to log in and is i…', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
@@ -50,6 +50,6 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
     const user = users[0];
     const response = await login(request, user.username, 'wrongPassword123!');
     expect(response.success).toBe(false);
-    expect(response.message).toBe("Invalid UserID/Password combination. Please verify.");
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 });
