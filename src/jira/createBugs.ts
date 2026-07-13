@@ -173,6 +173,13 @@ export async function createBugsForFailedTests(
 ): Promise<void> {
   const failedTests = parseFailedTests(resultsJsonPath);
 
+  // Debug: show what we parsed
+  const raw = require('fs').readFileSync(resultsJsonPath, 'utf-8');
+  const parsed = JSON.parse(raw);
+  const suiteCount = parsed.suites?.length ?? 0;
+  const specCount = parsed.suites?.reduce((a: number, s: any) => a + (s.specs?.length ?? 0), 0) ?? 0;
+  console.log(`   📄  results.json: ${suiteCount} suites, ${specCount} specs, ${failedTests.length} failed`);
+
   if (failedTests.length === 0) {
     console.log('   ✓  No failed tests — no bug tickets created');
     return;
