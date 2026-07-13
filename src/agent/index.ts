@@ -18,6 +18,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { fetchIssue, postComment, transitionIssue, attachFile } from '../jira/client';
+import { createBugsForFailedTests } from '../jira/createBugs';
 import { generatePlaywrightTests, PlainEnglishTestCase, hasRegressionTests } from './testGenerator';
 /* INTERACTIVE_PROMPT_START
 import { collectStories, printSummary }                          from './prompt';
@@ -293,7 +294,17 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     }
   }
 
-  // Step 8: Post results to Jira
+  // Step 8a: Create Jira bug tickets for failed tests
+  if (run.conclusion === 'failure' && jsonPath) {
+    console.log('\n🐛  CI failed — creating Jira bug tickets for failed tests…');
+    try {
+      await createBugsForFailedTests(jsonPath, run.url);
+    } catch (e) {
+      console.log(`   ⚠️   Bug creation failed: ${(e as Error).message}`);
+    }
+  }
+
+  // Step 8b: Post results to Jira
   console.log('\n💬  Posting results to Jira…');
   const passRate = reportResult?.summary
     ? Math.round((reportResult.summary.passed / reportResult.summary.totalTests) * 100)
