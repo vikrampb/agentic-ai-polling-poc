@@ -65,7 +65,7 @@ async function login(
 const CONTEXT = `
 HELPERS (already defined — do NOT redeclare):
   getUsers(request) → User[]
-    User fields: id, name, export_status, username, password, team_name
+    User fields: id, name, export_status, username, password, team_name (can be "PBE", "DPS", or null — 4 users have null team_name, do NOT assert all users have a team)
     export_status is ALWAYS the string "US_PERSON" or "NON_US_PERSON" — never a variable
   login(request, username, password) → LoginResponse
     LoginResponse fields: success (boolean), message (string), exportStatus? (string)
