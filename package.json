@@ -9,7 +9,7 @@
     "test": "playwright test",
     "test:report": "playwright show-report",
     "retag": "ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/retag.ts",
-    "sync-and-poll": "ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/retag.ts && RUN_MODE=poll ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/index.ts"
+    "sync-and-poll": "ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/retag.ts && npm run db:init && RUN_MODE=poll ts-node --compiler-options '{\"module\":\"commonjs\"}' src/agent/index.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
