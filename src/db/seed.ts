@@ -40,7 +40,7 @@ const users = [
   { name: 'Iron Man',        export_status: 'US_PERSON',     username: 'iron.man',        password_hash: 'Stark2025!',     team_name: 'DPS' },
   { name: 'Spider-Man',      export_status: 'US_PERSON',     username: 'spider.man',      password_hash: 'Parker2025!',    team_name: 'PBE' },
   { name: 'Black Widow',     export_status: 'US_PERSON',     username: 'black.widow',     password_hash: 'Romanoff2025!',  team_name: 'DPS' },
-  { name: 'Hawkeye',         export_status: 'US_PERSON',     username: 'hawkeye',         password_hash: 'Barton2025!',    team_name: 'PBE' },
+  { name: 'Hawkeye',         export_status: 'US_PERSON',     username: 'hawkeye',         password_hash: 'Barton2025!',    team_name: null  },
   { name: 'War Machine',     export_status: 'US_PERSON',     username: 'war.machine',     password_hash: 'Rhodes2025!',    team_name: 'DPS' },
   // ── 4 NON_US_PERSON — team_name left empty ───────────────────────────────
   { name: 'Green Goblin',    export_status: 'NON_US_PERSON', username: 'green.goblin',    password_hash: 'OsCorp2025!',    team_name: 'PBE' },
