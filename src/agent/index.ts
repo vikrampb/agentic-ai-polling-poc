@@ -394,11 +394,12 @@ async function runPolling(): Promise<void> {
         console.log('   ✓  All stories already processed this session — skipping');
         return;
       }
+      // Mark as processed BEFORE pipeline runs to prevent re-processing during long CI wait
+      newStories.forEach((s) => processedThisSession.add(s.issueKey));
       const stories: StoryInput[] = newStories.map((s) => ({
         issueKey:              s.issueKey,
         plainEnglishTestCases: [],
       }));
-      newStories.forEach((s) => processedThisSession.add(s.issueKey));
       await runPipeline(stories);
     },
   );
