@@ -118,6 +118,8 @@ export function mergeIntoSuite(
   const newItems = fresh.filter((i) =>
     !existingKeys.has(i.issueKey) || !existingSpecs.has(i.issueKey)
   );
+  // Deduplicate — never add the same key twice
+  const seen = new Set(existing.map((i) => i.issueKey));
 
   if (newItems.length > 0) {
     console.log(`   Adding ${newItems.length} new story/stories to suite:`);
@@ -126,7 +128,8 @@ export function mergeIntoSuite(
     console.log('   No new stories found in "In Review" status');
   }
 
-  let merged = [...existing, ...newItems];
+  const uniqueNew = newItems.filter((i) => { if (seen.has(i.issueKey)) return false; seen.add(i.issueKey); return true; });
+  let merged = [...existing, ...uniqueNew];
 
   if (MAX_SUITE_SIZE > 0 && merged.length > MAX_SUITE_SIZE) {
     console.log(`   Suite capped at ${MAX_SUITE_SIZE} items (removing oldest)`);
