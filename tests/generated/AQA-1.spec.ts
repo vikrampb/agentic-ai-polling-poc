@@ -43,7 +43,7 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
     const nonUsPersonUser = users.find(user => user.export_status === 'NON_US_PERSON');
     const response = await login(request, nonUsPersonUser.username, nonUsPersonUser.password);
     expect(response.success).toBe(false);
-    expect(response.message).toBe("Only US Persons are allowed to watch this demo.");
+    expect(response.message).toBe('Only US Persons are allowed to watch this demo.');
   });
   test('If an invalid password is used, regardless of export_status, the user instead presented with an e…', { tag: ['@regression'] }, async ({ request }) => {
     const users = await getUsers(request);
