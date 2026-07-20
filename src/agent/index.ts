@@ -318,7 +318,8 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     let storyResults = reportResult?.summary;
     if (storyResults && storyResults.tests) {
       const storyTests = storyResults.tests.filter((t: any) =>
-        t.file && t.file.includes(issueKey)
+        (t.file && t.file.includes(issueKey)) ||
+        (t.suiteName && t.suiteName.includes(issueKey))
       );
       const storyPassed  = storyTests.filter((t: any) => t.status === 'passed').length;
       const storyFailed  = storyTests.filter((t: any) => t.status === 'failed').length;
