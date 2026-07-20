@@ -314,9 +314,29 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
     const { issueKey } = story;
     if (issueMap[issueKey] === null) continue;
 
-    // Post ADF comment with results table
-    if (reportResult?.summary) {
-      const adfBody = buildJiraAdfBody(reportResult.summary, issueKey, allKeys);
+    // Filter results to only this story's tests
+    let storyResults = reportResult?.summary;
+    if (storyResults && storyResults.tests) {
+      const storyTests = storyResults.tests.filter((t: any) =>
+        t.file && t.file.includes(issueKey)
+      );
+      const storyPassed  = storyTests.filter((t: any) => t.status === 'passed').length;
+      const storyFailed  = storyTests.filter((t: any) => t.status === 'failed').length;
+      const storySkipped = storyTests.filter((t: any) => t.status === 'skipped').length;
+      const storyTotal   = storyTests.length;
+      storyResults = {
+        ...storyResults,
+        tests:      storyTests,
+        passed:     storyPassed,
+        failed:     storyFailed,
+        skipped:    storySkipped,
+        totalTests: storyTotal,
+      };
+    }
+
+    // Post ADF comment with results table (filtered to this story only)
+    if (storyResults) {
+      const adfBody = buildJiraAdfBody(storyResults, issueKey, [issueKey]);
       await postComment(issueKey, '', adfBody);
     } else {
       const comment = `Story: ${issueKey}\nCI Result: ${icon} ${run.conclusion?.toUpperCase()}\nRun: ${run.url}`;
