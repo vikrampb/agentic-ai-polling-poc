@@ -159,8 +159,7 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
   const existingFiles  = await listGeneratedTests();
   for (const file of existingFiles) {
     if (file.name.endsWith('.spec.ts') && !currentKeys.has(file.name)) {
-      // Never delete spec files that have @regression tags — they belong
-      // to the permanent regression suite regardless of current poll run
+        // Never delete spec files that have @regression tags
       const { Octokit } = require('octokit');
       const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
       try {
@@ -178,6 +177,15 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
           }
         }
       } catch { /* can't read file — delete it */ }
+      // Also keep specs whose story currently has the Regression label in Jira
+      const staleKey = file.name.replace('.spec.ts', '');
+      try {
+        const issue = await fetchIssue(staleKey);
+        if (issue.labels && issue.labels.some((l: string) => l.toLowerCase() === 'regression')) {
+          console.log(`   🔖  Keeping ${file.name} — story has Regression label in Jira`);
+          continue;
+        }
+      } catch { /* story not found or labels unavailable — delete */ }
       await deleteFile(file.path);
     }
   }
