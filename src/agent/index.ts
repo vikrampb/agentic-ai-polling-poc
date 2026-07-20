@@ -177,7 +177,7 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
           }
         }
       } catch { /* can't read file — delete it */ }
-      // Also keep specs whose story currently has the Regression label in Jira
+      // Keep specs for stories that are Done or have Regression label — only delete truly orphaned specs
       const staleKey = file.name.replace('.spec.ts', '');
       try {
         const issue = await fetchIssue(staleKey);
@@ -185,7 +185,11 @@ async function runPipeline(stories: StoryInput[]): Promise<void> {
           console.log(`   🔖  Keeping ${file.name} — story has Regression label in Jira`);
           continue;
         }
-      } catch { /* story not found or labels unavailable — delete */ }
+        if (issue.status && issue.status.toLowerCase() === 'done') {
+          console.log(`   ✓  Keeping ${file.name} — story is Done (previously processed)`);
+          continue;
+        }
+      } catch { /* story not found — delete orphaned spec */ }
       await deleteFile(file.path);
     }
   }
