@@ -50,6 +50,6 @@ test.describe('AQA-1 – Acceptance Criteria Tests', () => {
     const user = users[0];
     const response = await login(request, user.username, 'wrongPassword123!');
     expect(response.success).toBe(false);
-    expect(response.message).toBe("Invalid UserID/Password combination. Please verify.");
+    expect(response.message).toBe('Invalid UserID/Password combination. Please verify.');
   });
 });
