@@ -1,0 +1,246 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/20.20.2/x64/bin/node",
+      "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/playwright.config.ts",
+    "rootDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+        "commitHash": "d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+        "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/29945212282"
+      },
+      "gitCommit": {
+        "shortHash": "d1e3a3c",
+        "hash": "d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+        "subject": "fix: preserve spec files for Done stories — only delete truly orphaned specs",
+        "body": "fix: preserve spec files for Done stories — only delete truly orphaned specs\n",
+        "author": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1784573525000
+        },
+        "committer": {
+          "name": "Vikram Bhatwadekar",
+          "email": "vbhatwadekar@collineargroup.com",
+          "time": 1784573525000
+        },
+        "branch": "main"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/vikrampb/agentic-ai-polling-poc/commit/d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+            "commitHash": "d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+            "buildHref": "https://github.com/vikrampb/agentic-ai-polling-poc/actions/runs/29945212282"
+          },
+          "gitCommit": {
+            "shortHash": "d1e3a3c",
+            "hash": "d1e3a3c22090ba67fd8234a93c38b9ecb58d7516",
+            "subject": "fix: preserve spec files for Done stories — only delete truly orphaned specs",
+            "body": "fix: preserve spec files for Done stories — only delete truly orphaned specs\n",
+            "author": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1784573525000
+            },
+            "committer": {
+              "name": "Vikram Bhatwadekar",
+              "email": "vbhatwadekar@collineargroup.com",
+              "time": 1784573525000
+            },
+            "branch": "main"
+          },
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/runner/work/agentic-ai-polling-poc/agentic-ai-polling-poc/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "AQA-1.spec.ts",
+      "file": "AQA-1.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AQA-1 – Acceptance Criteria Tests",
+          "file": "AQA-1.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "If the export_status of the user says “US_PERSON”, the user is allowed to log in and should be pr…",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 37,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-22T18:07:00.617Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-bb7286e21ec98daf4ca0",
+              "file": "AQA-1.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "If the export_status of the user says “NON_US_PERSON”, the user is not allowed to log in and is i…",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-22T18:07:00.689Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-b1ab2ac21f36940b9e63",
+              "file": "AQA-1.spec.ts",
+              "line": 41,
+              "column": 7
+            },
+            {
+              "title": "If an invalid password is used, regardless of export_status, the user instead presented with an e…",
+              "ok": true,
+              "tags": [
+                "regression"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-07-22T18:07:00.736Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3330ea195ac52cbd3189-61af1f88e6e9c1299457",
+              "file": "AQA-1.spec.ts",
+              "line": 48,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-07-22T18:07:00.044Z",
+    "duration": 733.0730000000001,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
