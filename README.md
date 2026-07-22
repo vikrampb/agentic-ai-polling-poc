@@ -50,11 +50,11 @@ npm run db:init         # Seed the SQLite database (first-time setup)
 
 ## Three Ways to Run the Pipeline
 
-### 1. Local polling — demo mode
+### 1. Local polling
 ```bash
 npm run sync-and-poll
 ```
-Runs retag sync first, then polls Jira every 30 seconds. Best for live demos.
+Runs retag sync first, then polls Jira every 30 seconds. The time for polling can be changed in the local .env file
 
 ### 2. GitHub Actions — CI workflow (`ci.yml`)
 Triggered automatically when the agent pushes new tests, nightly at midnight UTC, or on demand from the GitHub Actions UI.
@@ -180,7 +180,7 @@ open /tmp/regression.html
 | `JIRA_API_TOKEN` | — | From id.atlassian.com/manage-profile/security/api-tokens |
 | `JIRA_PROJECT_KEY` | `AQA` | Jira project to poll |
 | `JIRA_READY_STATUS` | `In Review` | Status that triggers test generation |
-| `JIRA_POLL_INTERVAL_MS` | `30000` | Poll interval in ms (30s demo / 3600000 for 1hr) |
+| `JIRA_POLL_INTERVAL_MS` | `30000` | Poll interval in ms |
 | `MAX_SUITE_SIZE` | `0` | Max stories in suite (0 = unlimited) |
 | `MAX_HISTORY_RUNS` | `10` | HTML reports to keep |
 | `GITHUB_TOKEN` | — | Fine-grained PAT |
